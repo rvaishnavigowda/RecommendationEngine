@@ -17,10 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RecommendationEngineServerSide.Common\RecommendationEngineServerSide.Common.csproj" />
-    <ProjectReference Include="..\RecommendationEngineServerSide.Controller\RecommendationEngineServerSide.Controller.csproj" />
     <ProjectReference Include="..\RecommendationEngineServerSide.DAL\RecommendationEngineServerSide.DAL.csproj" />
-    <ProjectReference Include="..\RecommendationEngineServerSide.Service\RecommendationEngineServerSide.Service.csproj" />
   </ItemGroup>
 
 </Project>

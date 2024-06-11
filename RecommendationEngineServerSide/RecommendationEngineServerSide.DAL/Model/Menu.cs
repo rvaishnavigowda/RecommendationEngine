@@ -10,11 +10,11 @@ namespace RecommendationEngineServerSide.DAL.Model
     {
         public int MenuId { get; set; }
         public int MenuTypeId { get; set; }
-        public string? MenuName { get; set; }
+        public string MenuName { get; set; }
         public decimal Price { get; set; }
 
         public DateTime MenuCreationDate { get; set; }
-        public virtual MenuType? MenuType { get; set; }
+        public virtual MenuType MenuType { get; set; }
 
         public int ISDeleted { get; set; }
     }

@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RecommendationEngineServerSide.Common\RecommendationEngineServerSide.Common.csproj" />
+    <ProjectReference Include="..\RecommendationEngineServerSide.Service\RecommendationEngineServerSide.Service.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -7,16 +7,17 @@ using System.Threading.Tasks;
 
 namespace RecommendationEngineServerSide.DAL.Repository.GenericRepo
 {
-    internal interface IGenericRepository<T>
+    public interface IGenericRepository<T>
     {
-        IEnumerable<T> GetAll();
-        T GetById(int id);
-        IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
-        int Create(T entity);
-        int Update(T entity);
-        int Delete(int id);
+        Task<IEnumerable<T>> GetAll();
+        Task<T> GetById(int id);
+        Task<T> GetByStringId(string id);
+        Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate);
+        Task<int> Create(T entity);
+        Task<int> Update(T entity);
+        Task<int> Delete(int id);
 
-        int Add(T entity);
+        Task<int> Add(T entity);
 
     }
 }

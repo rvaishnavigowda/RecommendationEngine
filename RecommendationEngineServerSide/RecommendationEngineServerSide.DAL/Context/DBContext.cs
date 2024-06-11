@@ -23,8 +23,13 @@ namespace RecommendationEngineServerSide.DAL.Context
         public DbSet<Feedback> Feedback { get; set; }
         public DbSet<DailyMenu> DailyMenu { get; set; }
 
+        public DbSet<UserOrder> UserOrder { get; set; }
 
-       
+        public DbSet<Order> Order { get; set; }
+
+        public DbSet<Notification> Notification { get; set; }
+
+        public DbSet<NotificationType> notificationType { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

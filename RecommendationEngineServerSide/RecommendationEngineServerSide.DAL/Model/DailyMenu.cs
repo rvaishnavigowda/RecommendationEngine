@@ -13,7 +13,7 @@ namespace RecommendationEngineServerSide.DAL.Model
         public DateTime DailyMenuDate { get; set; }
 
         public int MenuId { get; set; }
-        public virtual Menu Menu { get; set; }
+        public virtual Menu? Menu { get; set; }
 
         public int ISDeleted { get; set; }
     }

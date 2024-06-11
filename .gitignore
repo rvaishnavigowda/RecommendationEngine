@@ -1,0 +1,97 @@
+ 
+# .gitignore for a .NET console application and .vs folder
+ 
+# Ignore the .vs folder at the root level
+.vs/
+ 
+# Ignore build results
+**/bin/
+**/obj/
+ 
+# Ignore user-specific files
+**/*.user
+**/*.userosscache
+**/*.suo
+**/*.userprefs
+**/*.csproj.user
+ 
+# Ignore Visual Studio temporary files, build results, and
+# user-generated files
+_DotNetTool/
+.vscode/
+.vscode-test/
+.idea/
+.ionide/
+.env
+.history
+node_modules/
+dist/
+dist-ssr/
+coverage/
+ 
+# Ignore application secrets
+secrets.json
+ 
+# Ignore logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+ 
+# Ignore environment variables
+.env
+.env.test
+.env.production
+ 
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+ 
+# Ignore other global files
+*.stackdump
+*.swp
+*~
+*.tmp
+*.tmp.*
+*.bak
+*.ori
+*.orig
+*.db
+*.lock
+*.log
+ 
+# Ignore build directories
+**/App1/bin/
+**/App1/obj/
+**/App2/bin/
+**/App2/obj/
+ 
+# Rider
+.idea/
+ 
+# Ignore NuGet Packages
+*.nupkg
+*.snupkg
+.nuget/
+ 
+# Ignore backup and packaged files
+*.bak
+*.zip
+*.tar.gz
+*.tar
+*.tgz
+*.rar
+*.7z
+*.bak
+ 
+# Ignore by folder name
+test/
+tests/
+Tools/
+Docs/
+Packages/
+Artifacts/

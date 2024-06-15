@@ -12,19 +12,19 @@ namespace RecommendationEngineServerSide.Common.Exceptions
         {
         }
 
-        public static void HandleMenuTypeNotFound()
+        public static AdminException HandleMenuTypeNotFound()
         {
-            throw new CustomException("The menu type you are trying to add doesn't exist. Please try adding the menu type first.");
+            return new AdminException("The menu type you are trying to add doesn't exist. Please try adding the menu type first.");
         }
 
-        public static void HandleMenuItemAlreadyExists()
+        public static AdminException HandleMenuItemAlreadyExists()
         {
-            throw new CustomException("The menu item you are trying to add already exists.");
+            return new AdminException("The menu item you are trying to add already exists.");
         }
 
-        public static void HandleMenuItemNotFound()
+        public static AdminException HandleMenuItemNotFound()
         {
-            throw new CustomException("The menu item you are trying to update doesn't exist.");
+            return new AdminException("The menu item you are trying to update doesn't exist.");
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RecommendationEngineClientSide.ConsoleHelper;
-using RecommendationEngineClientSide.Services;
+using RecommendationEngineClientSide.Services.AdminServices;
+using RecommendationEngineClientSide.Services.LoginServices;
+using RecommendationEngineClientSide.Services.RequestServices;
 
 namespace RecommendationEngineClientSide
 {

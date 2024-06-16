@@ -24,7 +24,7 @@ namespace RecommendationEngineServerSide.DAL.Model
 
         public virtual MenuType MenuType { get; set; }
 
-        public int IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }

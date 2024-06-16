@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecommendationEngineClientSide.Services
+namespace RecommendationEngineClientSide.Services.RequestServices
 {
     public class RequestService : IRequestService
     {

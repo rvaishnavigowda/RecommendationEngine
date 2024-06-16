@@ -16,6 +16,6 @@ namespace RecommendationEngineServerSide.DAL.Model
         public DateTime MenuCreationDate { get; set; }
         public virtual MenuType? MenuType { get; set; }
 
-        public int ISDeleted { get; set; }
+        public bool ISDeleted { get; set; }
     }
 }

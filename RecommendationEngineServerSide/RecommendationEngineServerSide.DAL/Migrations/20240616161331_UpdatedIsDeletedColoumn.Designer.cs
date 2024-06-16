@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecommendationEngineServerSide.DAL.Context;
 
@@ -11,9 +12,11 @@ using RecommendationEngineServerSide.DAL.Context;
 namespace RecommendationEngineServerSide.DAL.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20240616161331_UpdatedIsDeletedColoumn")]
+    partial class UpdatedIsDeletedColoumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,8 +42,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.Property<string>("DailyMenuName")
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("ISDeleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("ISDeleted")
+                        .HasColumnType("int");
 
                     b.Property<int>("MenuId")
                         .HasColumnType("int");
@@ -66,8 +69,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.Property<DateTime>("FeedbackDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<bool>("ISDeleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("ISDeleted")
+                        .HasColumnType("int");
 
                     b.Property<int>("MenuId")
                         .HasColumnType("int");
@@ -125,8 +128,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MenuTypeId"));
 
-                    b.Property<bool>("ISDeleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("ISDeleted")
+                        .HasColumnType("int");
 
                     b.Property<string>("MenuTypeName")
                         .HasColumnType("longtext");
@@ -144,8 +147,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("NotificationId"));
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("IsDeleted")
+                        .HasColumnType("int");
 
                     b.Property<string>("NotificationMessage")
                         .HasColumnType("longtext");
@@ -168,8 +171,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("NotificationTypeId"));
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("IsDeleted")
+                        .HasColumnType("int");
 
                     b.Property<string>("NotificationTypeName")
                         .HasColumnType("longtext");
@@ -187,8 +190,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("IsDeleted")
+                        .HasColumnType("int");
 
                     b.Property<int>("MenuTypeId")
                         .HasColumnType("int");
@@ -216,8 +219,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("IsDeleted")
+                        .HasColumnType("int");
 
                     b.Property<string>("Password")
                         .HasColumnType("longtext");
@@ -269,8 +272,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserTypeId"));
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<int>("IsDeleted")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserTypeName")
                         .HasColumnType("longtext");

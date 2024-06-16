@@ -18,6 +18,6 @@ namespace RecommendationEngineServerSide.DAL.Model
         public virtual UserType? UserType { get; set; }
 
         public DateTime UserCreationDate { get; set; }
-        public int IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

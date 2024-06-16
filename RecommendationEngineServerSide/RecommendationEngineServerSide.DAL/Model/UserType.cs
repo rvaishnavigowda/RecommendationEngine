@@ -12,7 +12,7 @@ namespace RecommendationEngineServerSide.DAL.Model
         [Key]
         public int UserTypeId { get; set; }
         public string? UserTypeName { get; set; }
-        public int IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
 
     }
 }

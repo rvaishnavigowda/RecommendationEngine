@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RecommendationEngineServerSide.Common.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,8 @@ namespace RecommendationEngineServerSide.Service.ChefService
 {
     public interface IChefService
     {
+        Task<MenuListDTO> GetMenuList(DateTime date);
+        Task AddDailyMenu(NewDailyMenuDTO menuList);
+
     }
 }

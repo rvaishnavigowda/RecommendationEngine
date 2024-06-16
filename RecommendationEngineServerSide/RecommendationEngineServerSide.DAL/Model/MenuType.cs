@@ -10,6 +10,6 @@ namespace RecommendationEngineServerSide.DAL.Model
     {
         public int MenuTypeId { get; set; }
         public string? MenuTypeName { get; set; }
-        public int ISDeleted { get; set; }
+        public bool ISDeleted { get; set; }
     }
 }

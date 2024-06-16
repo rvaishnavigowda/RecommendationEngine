@@ -24,7 +24,7 @@ namespace RecommendationEngineServerSide.Service.NotificationService
             {
                 NotificationMessage = notificationMessage,
                 NotificationTypeId = notificationType,
-                IsDeleted = 0
+                IsDeleted = false
             };
             await _unitOfWork.Notification.Create(notification);
             await _unitOfWork.Save();

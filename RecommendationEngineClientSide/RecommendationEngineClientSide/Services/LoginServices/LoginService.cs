@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
 using RecommendationEngineClientSide.DTO;
+using RecommendationEngineClientSide.Services.RequestServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecommendationEngineClientSide.Services
+namespace RecommendationEngineClientSide.Services.LoginServices
 {
     public class LoginService : ILoginService
     {
@@ -27,7 +28,14 @@ namespace RecommendationEngineClientSide.Services
             };
 
             string requestJson = JsonConvert.SerializeObject(loginRequest);
-            return await _requestService.SendRequestAsync(requestJson);
+            var serverResponse = await _requestService.SendRequestAsync(requestJson);
+            var jsonResponse = JsonConvert.DeserializeObject<LoginRequestDto>(serverResponse);
+            if (jsonResponse.Status != "failure")
+            {
+                return jsonResponse.UserRole;
+            }
+            else
+                return "failure";
         }
     }
 }

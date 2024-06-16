@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
 using RecommendationEngineClientSide.DTO;
+using RecommendationEngineClientSide.Services.RequestServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecommendationEngineClientSide.Services
+namespace RecommendationEngineClientSide.Services.AdminServices
 {
     public class AdminService : IAdminService
     {
@@ -17,7 +18,7 @@ namespace RecommendationEngineClientSide.Services
             _requestService = requestService;
         }
 
-        public async Task<string> AddMenuAsync(AddMenuRequestDto addMenuRequestDto)
+        public async Task<SocketResponseDTO> AddMenuAsync(AddMenuRequestDto addMenuRequestDto)
         {
             var addMenuRequest = new
             {
@@ -27,10 +28,12 @@ namespace RecommendationEngineClientSide.Services
             };
 
             string requestJson = JsonConvert.SerializeObject(addMenuRequest);
-            return await _requestService.SendRequestAsync(requestJson);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var Jsonresponse=JsonConvert.DeserializeObject<SocketResponseDTO>(response);
+            return Jsonresponse;
         }
 
-        public async Task<string> UpdateMenuAsync(UpdateMenuRequestDto updateMenuRequestDto)
+        public async Task<SocketResponseDTO> UpdateMenuAsync(UpdateMenuRequestDto updateMenuRequestDto)
         {
             var updateMenuRequest = new
             {
@@ -40,10 +43,12 @@ namespace RecommendationEngineClientSide.Services
             };
 
             string requestJson = JsonConvert.SerializeObject(updateMenuRequest);
-            return await _requestService.SendRequestAsync(requestJson);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var Jsonresponse = JsonConvert.DeserializeObject<SocketResponseDTO>(response);
+            return Jsonresponse;
         }
 
-        public async Task<string> DeleteMenuAsync(DeleteMenuRequestDto deleteMenuRequestDto)
+        public async Task<SocketResponseDTO> DeleteMenuAsync(DeleteMenuRequestDto deleteMenuRequestDto)
         {
             var deleteMenuRequest = new
             {
@@ -53,7 +58,9 @@ namespace RecommendationEngineClientSide.Services
             };
 
             string requestJson = JsonConvert.SerializeObject(deleteMenuRequest);
-            return await _requestService.SendRequestAsync(requestJson);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var Jsonresponse = JsonConvert.DeserializeObject<SocketResponseDTO>(response);
+            return Jsonresponse;
         }
     }
 }

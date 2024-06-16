@@ -84,7 +84,7 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                             OrderDate = orderDetailDTO.OrderDate,
                             UserId = isUserPresent.UserId,
                             MenuTypeId= isMenuTypePresent.MenuTypeId,
-                            IsDeleted = 0
+                            IsDeleted = false
                         };
 
                         await _unitOfWork.Order.Add(order);
@@ -145,7 +145,7 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                             Rating = feedbackDTO.Rating,
                             Comment = feedbackDTO.Comment,
                             FeedbackDate = feedbackDTO.FeedbackDate,
-                            ISDeleted = 0,
+                            ISDeleted = false,
                         };
                         await _unitOfWork.Feedback.Add(feedback);
                         await _unitOfWork.Save();

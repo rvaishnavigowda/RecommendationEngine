@@ -98,7 +98,7 @@ namespace RecommendationEngineServerSide.Service.AdminService
                 var isMenuItemPresent = await CheckMenuItem(deleteMenuDTO.MenuName);
                 if (isMenuItemPresent != null)
                 {
-                    isMenuItemPresent.ISDeleted = 1;
+                    isMenuItemPresent.ISDeleted = true;
                     await _unitOfWork.Menu.Update(isMenuItemPresent);
                     await _unitOfWork.Save();
                 }

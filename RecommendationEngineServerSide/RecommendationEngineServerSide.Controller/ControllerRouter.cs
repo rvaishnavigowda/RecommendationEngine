@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text.Json;
-using System.Threading.Tasks;
+﻿using System.Text.Json;
 using RecommendationEngineServerSide.Common.DTO;
 using RecommendationEngineServerSide.Controller.AdminControllers;
+using RecommendationEngineServerSide.Controller.ChefControllers;
 using RecommendationEngineServerSide.Controller.EmployeeControllers;
 using RecommendationEngineServerSide.Controller.LoginControllers;
-using RecommendationEngineServerSide.Service.RegisterService;
 
 namespace RecommendationEngineServerSide.Controller
 {
@@ -16,12 +12,14 @@ namespace RecommendationEngineServerSide.Controller
         private readonly LoginController _loginController;
         private readonly AdminController _adminController;
         private readonly EmployeeController _employeeController;
+        private readonly ChefController _chefController;
 
-        public ControllerRouter(LoginController controller, AdminController adminController, EmployeeController employeeController)
+        public ControllerRouter(LoginController controller, AdminController adminController, EmployeeController employeeController, ChefController chefController)
         {
             _loginController = controller;
             _adminController = adminController;
             _employeeController = employeeController;
+            _chefController = chefController;
         }
 
         public async Task<string> RouteRequestAsync(string controllerName, string actionName, JsonElement data)
@@ -37,6 +35,8 @@ namespace RecommendationEngineServerSide.Controller
                 case "EmplyoeeController":
                     return await RouteEmployeeControllerActions(actionName, data);
 
+                case "ChefController":
+                    return await RouteChefControllerActions(actionName, data);
 
             }
             return "";
@@ -94,6 +94,25 @@ namespace RecommendationEngineServerSide.Controller
                     var feedbackDTO = await DeserializeJson<FeedbackDTO>(data);
                     var giveFeedbackResult = await _employeeController.HandleGiveFeedback(feedbackDTO);
                     return await SerializeJson(giveFeedbackResult);
+                default:
+                    throw new ArgumentException("Invalid action name");
+            }
+        }
+
+        private async Task<string> RouteChefControllerActions(string actionName, JsonElement data)
+        {
+            switch (actionName)
+            {
+                case "HandleGetMenuList":
+                    var date = await DeserializeJson<DateTime>(data);
+                    var menuListResult = await _chefController.HandleGetMenuList(date);
+                    return await SerializeJson(menuListResult);
+
+                case "HandleAddDailyMenu":
+                    var newDailyMenuDTO = await DeserializeJson<NewDailyMenuDTO>(data);
+                    var addDailyMenuResult = await _chefController.HandleAddDailyMenu(newDailyMenuDTO);
+                    return await SerializeJson(addDailyMenuResult);
+
                 default:
                     throw new ArgumentException("Invalid action name");
             }

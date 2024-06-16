@@ -18,6 +18,6 @@ namespace RecommendationEngineServerSide.DAL.Model
 
         public virtual NotificationType NotificationType { get; set; }
 
-        public int IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

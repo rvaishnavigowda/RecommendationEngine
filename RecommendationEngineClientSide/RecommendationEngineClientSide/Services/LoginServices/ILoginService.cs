@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecommendationEngineClientSide.Services
+namespace RecommendationEngineClientSide.Services.LoginServices
 {
     public interface ILoginService
     {

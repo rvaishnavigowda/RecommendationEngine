@@ -17,5 +17,10 @@ namespace RecommendationEngineServerSide.Common.Exceptions
         {
             return new DailyMenuException("The menu for tomorrow has not been rolled out yet. Please check it after some time.");
         }
+
+        public static DailyMenuException MenuNotPresentException()
+        {
+            return new DailyMenuException("There are no menu items present in the sytem.");
+        }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using RecommendationEngineClientSide.DTO;
-using RecommendationEngineClientSide.Services;
+using RecommendationEngineClientSide.Services.AdminServices;
 using System;
 using System.Threading.Tasks;
 
@@ -77,8 +77,8 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                     MenuPrice = menuPrice
                 };
 
-                string responseJson = await _adminService.AddMenuAsync(addMenuRequestDto);
-                Console.WriteLine($"Server response: {responseJson}");
+                var responseJson = await _adminService.AddMenuAsync(addMenuRequestDto);
+                Console.WriteLine(responseJson.Message);
             }
             catch (Exception ex)
             {
@@ -110,8 +110,8 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                     MenuPrice = menuPrice
                 };
 
-                string responseJson = await _adminService.UpdateMenuAsync(updateMenuRequestDto);
-                Console.WriteLine($"Server response: {responseJson}");
+                var responseJson = await _adminService.UpdateMenuAsync(updateMenuRequestDto);
+                Console.WriteLine(responseJson.Message);
             }
             catch (Exception ex)
             {
@@ -131,8 +131,8 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                     MenuName = menuName,
                 };
 
-                string responseJson = await _adminService.DeleteMenuAsync(deleteMenuRequestDto);
-                Console.WriteLine($"Server response: {responseJson}");
+                var responseJson = await _adminService.DeleteMenuAsync(deleteMenuRequestDto);
+                Console.WriteLine(responseJson.Message);
             }
             catch (Exception ex)
             {

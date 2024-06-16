@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using RecommendationEngineClientSide;
 using RecommendationEngineClientSide.ConsoleHelper;
-using RecommendationEngineClientSide.Services;
+using RecommendationEngineClientSide.Services.AdminServices;
+using RecommendationEngineClientSide.Services.LoginServices;
 
 namespace RecommendationEngineClient
 {
@@ -15,7 +16,7 @@ namespace RecommendationEngineClient
             serviceCollection.AddClientServices();
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            Console.WriteLine("Welcome to the Recommendation Engine Client!");
+            Console.WriteLine("Welcome to the Recommendation Engine");
 
             while (true)
             {

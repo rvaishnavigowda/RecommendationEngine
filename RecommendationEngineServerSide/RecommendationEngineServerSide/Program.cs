@@ -15,6 +15,9 @@ using RecommendationEngineServerSide.Common.DTO;
 using RecommendationEngineServerSide.Controller.AdminControllers;
 using RecommendationEngineServerSide.Service.EmplyoeeService;
 using RecommendationEngineServerSide.Service.NotificationService;
+using RecommendationEngineServerSide.Service.ChefService;
+using RecommendationEngineServerSide.Controller.ChefControllers;
+using RecommendationEngineServerSide.Controller.EmployeeControllers;
 
 namespace RecommendationEngineServerSide
 {
@@ -29,14 +32,6 @@ namespace RecommendationEngineServerSide
             _ = socketServer.StartAsync();
 
             await host.RunAsync();
-            //Console.WriteLine("enter the new menu:");
-            //MenuDTO menu = new MenuDTO();
-            //Console.WriteLine("enter the menu Type:");
-            //menu.MenuType=Console.ReadLine();
-            //Console.WriteLine("enter menu name:");
-            //menu.MenuName=Console.ReadLine();
-            //Console.WriteLine("enter the item price");
-            //menu.MenuPrice=Convert.ToInt32(Console.ReadLine());
             
         }
 
@@ -52,14 +47,16 @@ namespace RecommendationEngineServerSide
                     services.AddScoped<IUnitOfWork, UnitOfWork>();
                     services.AddScoped<ControllerRouter>();
                     services.AddScoped<LoginController>();
+                    services.AddScoped<EmployeeController>();
+                    services.AddScoped<ChefController>();
                     services.AddScoped<IAdminService, AdminService>();
                     services.AddAutoMapper(typeof(Mapper));
                     services.AddScoped<IRegisterService,RegisterService>();
                     services.AddScoped<IEmplyoeeService, EmplyoeeService>();
+                    services.AddScoped<IChefService, ChefService>();
                     services.AddScoped<INotificationService, NotificationService>();
                     services.AddScoped<AdminController>(); 
                 });
     }
 }
 
- 

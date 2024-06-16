@@ -15,6 +15,6 @@ namespace RecommendationEngineServerSide.DAL.Model
         public int MenuId { get; set; }
         public virtual Menu? Menu { get; set; }
 
-        public int ISDeleted { get; set; }
+        public bool ISDeleted { get; set; }
     }
 }

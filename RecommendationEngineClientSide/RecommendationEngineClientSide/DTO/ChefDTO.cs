@@ -1,48 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RecommendationEngineClientSide.DTO;
 
-namespace RecommendationEngineServerSide.Common.DTO
+namespace RecommendationEngineClientSide.ChefDTO
 {
-    public class DailyMenuDTO : SocketResponseDTO
+    public class DailyMenuDto : SocketResponseDTO
     {
         public string UserName { get; set; }
-
         public DateTime CurrentDate { get; set; }
-
-        public IList<DailyMenuList> MenuList { get; set; }
+        public IList<DailyMenuListDto> MenuList { get; set; }
     }
 
-    public class DailyMenuList
+    public class DailyMenuListDto
     {
         public string MenuName { get; set; }
         public decimal Price { get; set; }
-
         public int Rating { get; set; }
     }
 
-    public class ListMenuDTO
+    public class ListMenuDto
     {
         public string MenuItemName { get; set; }
         public string MenuItemType { get; set; }
         public decimal Price { get; set; }
-
         public int Rating { get; set; }
     }
-    public class MenuListDTO : SocketResponseDTO
+
+    public class MenuListDto : SocketResponseDTO
     {
-        public IList<ListMenuDTO> Menu { get; set;}
+        public IList<ListMenuDto> Menu { get; set; }
     }
 
-    public class NewDailyMenuDTO
+    public class NewDailyMenuDto
     {
         public DateTime CurrentDate { get; set; }
-        public IList<MenuList> Menu { get; set;}
+        public IList<MenuListItemDto> Menu { get; set; }
     }
 
-    public class MenuList
+    public class MenuListItemDto
     {
         public string MenuItemName { get; set; }
     }

@@ -73,6 +73,10 @@ namespace RecommendationEngineServerSide.Controller
                     var deleteMenuDTO = await DeserializeJson<DeleteMenuDTO>(data);
                     var deleteMenuResult = await _adminController.DeleteMenu(deleteMenuDTO);
                     return await SerializeJson(deleteMenuResult);
+                case "FetchMenuDetails":
+                    var fetchMenuRequestDto = await DeserializeJson<FetchMenuRequestDTO>(data);
+                    var fetchMenuResult = await _adminController.FetchMenuDetails(fetchMenuRequestDto);
+                    return await SerializeJson(fetchMenuResult);
                 default:
                     throw new ArgumentException("Invalid action name");
             }

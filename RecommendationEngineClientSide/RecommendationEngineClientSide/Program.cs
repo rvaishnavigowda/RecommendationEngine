@@ -4,6 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using RecommendationEngineClientSide;
 using RecommendationEngineClientSide.ConsoleHelper;
 using RecommendationEngineClientSide.Services.AdminServices;
+using RecommendationEngineClientSide.Services.ChefServices;
+using RecommendationEngineClientSide.Services.EmployeeServices;
 using RecommendationEngineClientSide.Services.LoginServices;
 
 namespace RecommendationEngineClient
@@ -29,6 +31,8 @@ namespace RecommendationEngineClient
         {
             var loginConsoleHelper = new LoginConsoleHelper(serviceProvider.GetService<ILoginService>());
             var adminConsoleHelper = new AdminConsoleHelper(serviceProvider.GetService<IAdminService>());
+            var chefConsoleHelper = new ChefConsoleHelper(serviceProvider.GetService<IChefService>());
+            var employeeConsoleHelper = new EmployeeConsoleHelper(serviceProvider.GetService<IEmployeeService>());
 
             while (true)
             {
@@ -41,23 +45,20 @@ namespace RecommendationEngineClient
                         await adminConsoleHelper.HandleAdminRoleAsync();
                         break;
                     case "chef":
-                        // Add chef role handling here
+                        await chefConsoleHelper.HandleChefRoleAsync();
                         break;
                     case "employee":
-                        await adminConsoleHelper.HandleAdminRoleAsync();
+                        await employeeConsoleHelper.HandleEmployeeRoleAsync();
                         break;
                     default:
                         Console.WriteLine("Unknown role.");
                         break;
                 }
 
-                //if (role == "admin" || role == "employee")
-                //{
-                    if (adminConsoleHelper.ShouldLogout)
-                    {
-                        break;
-                    }
-                //}
+                if (adminConsoleHelper.ShouldLogout || chefConsoleHelper.ShouldLogout || employeeConsoleHelper.ShouldLogout)
+                {
+                    break;
+                }
             }
         }
     }

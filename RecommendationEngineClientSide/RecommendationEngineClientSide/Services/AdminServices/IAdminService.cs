@@ -10,6 +10,7 @@ namespace RecommendationEngineClientSide.Services.AdminServices
     public interface IAdminService
     {
         Task<SocketResponseDTO> AddMenuAsync(AddMenuRequestDto addMenuRequestDto);
+        Task<FetchMenuDTO> FetchMenuDetailsAsync(FetchMenuRequestDTO fetchMenuRequestDto);
         Task<SocketResponseDTO> UpdateMenuAsync(UpdateMenuRequestDto updateMenuRequestDto);
         Task<SocketResponseDTO> DeleteMenuAsync(DeleteMenuRequestDto deleteMenuRequestDto);
     }

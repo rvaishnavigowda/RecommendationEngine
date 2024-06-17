@@ -23,7 +23,7 @@ public class SocketServer
     }
 
     public async Task StartAsync()
-    {
+  {
         var listener = new TcpListener(IPAddress.Any, Port);
         listener.Start();
         Console.WriteLine($"Server started on port {Port}");

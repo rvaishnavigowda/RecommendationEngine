@@ -18,6 +18,7 @@ using RecommendationEngineServerSide.Service.NotificationService;
 using RecommendationEngineServerSide.Service.ChefService;
 using RecommendationEngineServerSide.Controller.ChefControllers;
 using RecommendationEngineServerSide.Controller.EmployeeControllers;
+using Microsoft.Extensions.Logging;
 
 namespace RecommendationEngineServerSide
 {
@@ -55,7 +56,14 @@ namespace RecommendationEngineServerSide
                     services.AddScoped<IEmplyoeeService, EmplyoeeService>();
                     services.AddScoped<IChefService, ChefService>();
                     services.AddScoped<INotificationService, NotificationService>();
-                    services.AddScoped<AdminController>(); 
+                    services.AddScoped<AdminController>();
+                    services.AddLogging(config =>
+                    {
+                        config.ClearProviders();
+                        config.AddConsole();
+                        config.SetMinimumLevel(LogLevel.Warning);
+                        config.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                    });
                 });
     }
 }

@@ -61,6 +61,25 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
             }
         }
 
+        public async Task<FetchMenuDTO> FetchMenuDetails(FetchMenuRequestDTO fetchMenuRequestDto)
+        {
+            try
+            {
+                var menuDetails = await _adminService.GetMenuDetailsByName(fetchMenuRequestDto.MenuName);
+                menuDetails.Status = "success";
+                menuDetails.Message="The menu items by the name"+fetchMenuRequestDto.MenuName;
+                return menuDetails;
+            }
+            catch(AdminException ex)
+            {
+                return new FetchMenuDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
+
         public async Task<SocketResponseDTO> HandleUpdateMenu(UpdateMenuDTO updateMenuDTO)
         {
             try

@@ -29,4 +29,21 @@ namespace RecommendationEngineServerSide.Common.DTO
     {
 
     }
+    public class FetchMenuRequestDTO
+    {
+        public string MenuName { get; set; }
+    }
+
+    public class FetchMenuResponseDTO
+    {
+        public string MenuName { get; set; }
+        public string MenuType { get; set; }
+        public decimal MenuPrice { get; set; }
+    }
+
+    public class FetchMenuDTO:SocketResponseDTO
+    {
+        public IList<FetchMenuResponseDTO> MenuList { get; set; }
+    }
+
 }

@@ -8,10 +8,12 @@ namespace RecommendationEngineClientSide.ConsoleHelper
     public class EmployeeConsoleHelper
     {
         private readonly IEmployeeService _employeeService;
+        public bool ShouldLogout { get; private set; }
 
         public EmployeeConsoleHelper(IEmployeeService employeeService)
         {
             _employeeService = employeeService;
+            ShouldLogout = false;
         }
 
         public async Task HandleEmployeeRoleAsync()

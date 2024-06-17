@@ -26,5 +26,15 @@ namespace RecommendationEngineServerSide.Common.Exceptions
         {
             return new AdminException("The menu item you are trying to update doesn't exist.");
         }
+
+        public static AdminException HandleMenuItemDeleted()
+        {
+            return new AdminException("The menu item you are trying to edit is already been deleted. Please try adding it first.");
+        }
+
+        public static AdminException HandleMenuItemAlreadyDeleted()
+        {
+            return new AdminException("The menu item is already deleted.");
+        }
     }
 }

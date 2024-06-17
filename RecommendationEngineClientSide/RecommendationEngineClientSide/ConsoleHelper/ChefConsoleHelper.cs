@@ -9,10 +9,11 @@ namespace RecommendationEngineClientSide.ConsoleHelper
     public class ChefConsoleHelper
     {
         private readonly IChefService _chefService;
-
+        public bool ShouldLogout { get; private set; }
         public ChefConsoleHelper(IChefService chefService)
         {
             _chefService = chefService;
+            ShouldLogout = false;
         }
 
         public async Task HandleChefRoleAsync()

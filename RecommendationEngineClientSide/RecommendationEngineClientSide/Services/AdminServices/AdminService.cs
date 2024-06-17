@@ -33,6 +33,21 @@ namespace RecommendationEngineClientSide.Services.AdminServices
             return Jsonresponse;
         }
 
+        public async Task<FetchMenuDTO> FetchMenuDetailsAsync(FetchMenuRequestDTO fetchMenuRequestDto)
+        {
+            var fetchMenuRequest = new
+            {
+                Controller = "AdminController",
+                Action = "FetchMenuDetails",
+                Data = fetchMenuRequestDto
+            };
+
+            string requestJson = JsonConvert.SerializeObject(fetchMenuRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var fetchResponse = JsonConvert.DeserializeObject<FetchMenuDTO>(response);
+            return fetchResponse;
+        }
+
         public async Task<SocketResponseDTO> UpdateMenuAsync(UpdateMenuRequestDto updateMenuRequestDto)
         {
             var updateMenuRequest = new

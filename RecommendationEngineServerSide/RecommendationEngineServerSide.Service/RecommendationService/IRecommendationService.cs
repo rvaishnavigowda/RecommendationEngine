@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RecommendationEngineServerSide.Common.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace RecommendationEngineServerSide.Service.RecommendationService
 {
     public interface IRecommendationService
     {
+        Task<List<MenuItemDTO>> GetRecommendedMenuItems();
     }
 }

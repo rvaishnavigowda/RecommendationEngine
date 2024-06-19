@@ -16,7 +16,7 @@ namespace RecommendationEngineClientSide.Services.ChefServices
             _requestService = requestService;
         }
 
-        public async Task<SocketResponseDTO> GetMenuListAsync(DateTime date)
+        public async Task<MenuListDto> GetMenuListAsync(DateTime date)
         {
             var getMenuListRequest = new
             {
@@ -27,7 +27,7 @@ namespace RecommendationEngineClientSide.Services.ChefServices
 
             string requestJson = JsonConvert.SerializeObject(getMenuListRequest);
             var response = await _requestService.SendRequestAsync(requestJson);
-            return JsonConvert.DeserializeObject<SocketResponseDTO>(response);
+            return JsonConvert.DeserializeObject<MenuListDto>(response);
         }
 
         public async Task<SocketResponseDTO> AddDailyMenuAsync(NewDailyMenuDto newDailyMenuDto)

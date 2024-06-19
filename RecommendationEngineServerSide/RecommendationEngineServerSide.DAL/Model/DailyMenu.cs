@@ -9,7 +9,7 @@ namespace RecommendationEngineServerSide.DAL.Model
     public class DailyMenu
     {
         public int DailyMenuId { get; set; }
-        public string DailyMenuName { get; set; }
+        //public string DailyMenuName { get; set; }
         public DateTime DailyMenuDate { get; set; }
 
         public int MenuId { get; set; }

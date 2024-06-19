@@ -12,7 +12,7 @@ namespace RecommendationEngineServerSide.DAL.Model
     {
         [Key]
         public int NotificationId { get; set; }
-
+        public DateTime NotificationDate { get; set; }
         public string NotificationMessage { get; set; }
         public int NotificationTypeId { get; set; }
 

@@ -20,7 +20,7 @@ namespace RecommendationEngineServerSide.Common.DTO
         public string MenuName { get; set; }
         public decimal Price { get; set; }
 
-        public int Rating { get; set; }
+        public double Rating { get; set; }
     }
 
     public class ListMenuDTO
@@ -29,7 +29,8 @@ namespace RecommendationEngineServerSide.Common.DTO
         public string MenuItemType { get; set; }
         public decimal Price { get; set; }
 
-        public int Rating { get; set; }
+        public double Rating { get; set; }
+        public int OrderCount { get; set; }
     }
     public class MenuListDTO : SocketResponseDTO
     {

@@ -18,7 +18,7 @@ namespace RecommendationEngineClientSide.Services.LoginServices
             _requestService = requestService;
         }
 
-        public async Task<string> HandleLoginAsync(LoginRequestDto loginRequestDto)
+        public async Task<LoginRequestDto> HandleLoginAsync(LoginRequestDto loginRequestDto)
         {
             var loginRequest = new
             {
@@ -32,10 +32,11 @@ namespace RecommendationEngineClientSide.Services.LoginServices
             var jsonResponse = JsonConvert.DeserializeObject<LoginRequestDto>(serverResponse);
             if (jsonResponse.Status != "failure")
             {
-                return jsonResponse.UserRole;
+                return jsonResponse;
             }
             else
-                return "failure";
+            { return null; }
+                
         }
     }
 }

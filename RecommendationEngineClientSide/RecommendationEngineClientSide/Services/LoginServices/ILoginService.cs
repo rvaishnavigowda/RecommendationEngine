@@ -9,6 +9,6 @@ namespace RecommendationEngineClientSide.Services.LoginServices
 {
     public interface ILoginService
     {
-        Task<string> HandleLoginAsync(LoginRequestDto loginRequestDto);
+        Task<LoginRequestDto> HandleLoginAsync(LoginRequestDto loginRequestDto);
     }
 }

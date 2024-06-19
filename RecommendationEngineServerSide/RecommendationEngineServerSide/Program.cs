@@ -19,6 +19,7 @@ using RecommendationEngineServerSide.Service.ChefService;
 using RecommendationEngineServerSide.Controller.ChefControllers;
 using RecommendationEngineServerSide.Controller.EmployeeControllers;
 using Microsoft.Extensions.Logging;
+using RecommendationEngineServerSide.Service.RecommendationService;
 
 namespace RecommendationEngineServerSide
 {
@@ -54,6 +55,7 @@ namespace RecommendationEngineServerSide
                     services.AddAutoMapper(typeof(Mapper));
                     services.AddScoped<IRegisterService,RegisterService>();
                     services.AddScoped<IEmplyoeeService, EmplyoeeService>();
+                    services.AddScoped<IRecommendationService,  RecommendationService>();
                     services.AddScoped<IChefService, ChefService>();
                     services.AddScoped<INotificationService, NotificationService>();
                     services.AddScoped<AdminController>();

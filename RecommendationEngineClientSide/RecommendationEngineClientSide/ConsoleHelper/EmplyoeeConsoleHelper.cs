@@ -9,6 +9,8 @@ namespace RecommendationEngineClientSide.ConsoleHelper
     {
         private readonly IEmployeeService _employeeService;
         public bool ShouldLogout { get; private set; }
+        private string _username;
+        private DateTime _date;
 
         public EmployeeConsoleHelper(IEmployeeService employeeService)
         {
@@ -16,8 +18,10 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             ShouldLogout = false;
         }
 
-        public async Task HandleEmployeeRoleAsync()
+        public async Task HandleEmployeeRoleAsync(string userName, DateTime date)
         {
+            _username = userName.ToLower();
+            _date = date;
             bool continueLoop = true;
             while (continueLoop)
             {
@@ -54,28 +58,37 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             try
             {
-                Console.WriteLine("Enter your username:");
-                string userName = Console.ReadLine();
+                
 
                 var dailyMenuRequestDto = new DailyMenuRequestDto
                 {
-                    UserName = userName,
-                    CurrentDate = DateTime.Now
+                    UserName = _username.ToLower(),
+                    CurrentDate = _date
                 };
 
                 var response = await _employeeService.GetDailyMenuAsync(dailyMenuRequestDto);
-                if (response.MenuList != null && response.MenuList.Count > 0)
+                if(response.Status=="Success")
                 {
-                    Console.WriteLine("Daily Menu:");
-                    foreach (var menuItem in response.MenuList)
+                    if (response.MenuList != null && response.MenuList.Count > 0)
                     {
-                        Console.WriteLine($"{menuItem.MenuName} - {menuItem.Price} - {menuItem.Rating}");
+
+                        Console.WriteLine("Daily Menu:");
+                        Console.WriteLine("Menu\t Price\t Rating \t");
+                        foreach (var menuItem in response.MenuList)
+                        {
+                            Console.WriteLine($"{menuItem.MenuName}\t {menuItem.Price:F2}\t {menuItem.Rating}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No menu items found.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("No menu items found.");
+                    Console.WriteLine(response.Message);
                 }
+                
             }
             catch (Exception ex)
             {
@@ -87,16 +100,11 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             try
             {
-                Console.WriteLine("Enter your username:");
-                string userName = Console.ReadLine();
+                // Ask for the type of menu
+                Console.WriteLine("Enter the type of menu you are ordering:");
+                string orderMenutype = Console.ReadLine();
 
-                Console.WriteLine("Enter order date (YYYY-MM-DD):");
-                if (!DateTime.TryParse(Console.ReadLine(), out DateTime orderDate))
-                {
-                    Console.WriteLine("Invalid date format. Please try again.");
-                    return;
-                }
-
+                // Initialize order items list
                 var orderItems = new List<OrderItemDto>();
                 bool addingItems = true;
                 while (addingItems)
@@ -104,17 +112,9 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                     Console.WriteLine("Enter menu item name:");
                     string menuItemName = Console.ReadLine();
 
-                    Console.WriteLine("Enter quantity:");
-                    if (!int.TryParse(Console.ReadLine(), out int quantity))
-                    {
-                        Console.WriteLine("Invalid quantity. Please try again.");
-                        continue;
-                    }
-
                     orderItems.Add(new OrderItemDto
                     {
-                        MenuName = menuItemName,
-                        Quantity = quantity
+                        MenuName = menuItemName.ToLower()
                     });
 
                     Console.WriteLine("Do you want to add more items? (yes/no)");
@@ -122,10 +122,12 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                     addingItems = addMore.Equals("yes", StringComparison.OrdinalIgnoreCase);
                 }
 
+                // Create the order detail request DTO
                 var orderDetailRequestDto = new OrderDetailRequestDto
                 {
-                    UserName = userName,
-                    OrderDate = orderDate,
+                    UserName = _username.ToLower(),
+                    OrderDate = _date,
+                    OrderMenutype = orderMenutype.ToLower(),
                     Items = orderItems
                 };
 
@@ -138,13 +140,11 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             }
         }
 
+
         private async Task GiveFeedbackAsync()
         {
             try
             {
-                Console.WriteLine("Enter your username:");
-                string userName = Console.ReadLine();
-
                 Console.WriteLine("Enter menu item name:");
                 string menuItemName = Console.ReadLine();
 
@@ -160,14 +160,15 @@ namespace RecommendationEngineClientSide.ConsoleHelper
 
                 var feedbackDto = new FeedbackDto
                 {
-                    UserName = userName,
-                    MenuName = menuItemName,
+                    UserName = _username.ToLower(),
+                    MenuName = menuItemName.ToLower(),
                     Rating = rating,
-                    Comment = comment,
-                    FeedbackDate = DateTime.Now
+                    Comment = comment.ToLower(),
+                    FeedbackDate = _date
                 };
 
                 var response = await _employeeService.GiveFeedbackAsync(feedbackDto);
+
                 Console.WriteLine(response.Message);
             }
             catch (Exception ex)

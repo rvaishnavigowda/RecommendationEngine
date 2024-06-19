@@ -1,39 +1,62 @@
-﻿using RecommendationEngineClientSide.DTO;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text.Json;
+﻿using Newtonsoft.Json;
+using RecommendationEngineClientSide.DTO;
+using RecommendationEngineClientSide.Services.RequestServices;
 using System.Threading.Tasks;
 
 namespace RecommendationEngineClientSide.Services.EmployeeServices
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly HttpClient _httpClient;
+        private readonly IRequestService _requestService;
 
-        public EmployeeService(HttpClient httpClient)
+        public EmployeeService(IRequestService requestService)
         {
-            _httpClient = httpClient;
+            _requestService = requestService;
         }
 
         public async Task<DailyMenuResponseDto> GetDailyMenuAsync(DailyMenuRequestDto dailyMenuRequestDto)
         {
-            var response = await _httpClient.PostAsJsonAsync("EmployeeController/HandleGetDailyMenu", dailyMenuRequestDto);
-            response.EnsureSuccessStatusCode();
-            return await JsonSerializer.DeserializeAsync<DailyMenuResponseDto>(await response.Content.ReadAsStreamAsync());
+            var getDailyMenuRequest = new
+            {
+                Controller = "EmployeeController",
+                Action = "HandleGetDailyMenu",
+                Data = dailyMenuRequestDto
+            };
+
+            string requestJson = JsonConvert.SerializeObject(getDailyMenuRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var dailyMenuResponse = JsonConvert.DeserializeObject<DailyMenuResponseDto>(response);
+            return dailyMenuResponse;
         }
 
-        public async Task<SocketResponseDTO> PlaceOrderAsync(OrderDetailRequestDto orderDetailRequestDto)
+        public async Task<OrderDetailRequestDto> PlaceOrderAsync(OrderDetailRequestDto orderDetailRequestDto)
         {
-            var response = await _httpClient.PostAsJsonAsync("EmployeeController/HandlePlaceOrder", orderDetailRequestDto);
-            response.EnsureSuccessStatusCode();
-            return await JsonSerializer.DeserializeAsync<SocketResponseDTO>(await response.Content.ReadAsStreamAsync());
+            var placeOrderRequest = new
+            {
+                Controller = "EmployeeController",
+                Action = "HandlePlaceOrder",
+                Data = orderDetailRequestDto
+            };
+
+            string requestJson = JsonConvert.SerializeObject(placeOrderRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var socketResponse = JsonConvert.DeserializeObject<OrderDetailRequestDto>(response);
+            return socketResponse;
         }
 
         public async Task<SocketResponseDTO> GiveFeedbackAsync(FeedbackDto feedbackDto)
         {
-            var response = await _httpClient.PostAsJsonAsync("EmployeeController/HandleGiveFeedback", feedbackDto);
-            response.EnsureSuccessStatusCode();
-            return await JsonSerializer.DeserializeAsync<SocketResponseDTO>(await response.Content.ReadAsStreamAsync());
+            var giveFeedbackRequest = new
+            {
+                Controller = "EmployeeController",
+                Action = "HandleGiveFeedback",
+                Data = feedbackDto
+            };
+
+            string requestJson = JsonConvert.SerializeObject(giveFeedbackRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var socketResponse = JsonConvert.DeserializeObject<SocketResponseDTO>(response);
+            return socketResponse;
         }
     }
 }

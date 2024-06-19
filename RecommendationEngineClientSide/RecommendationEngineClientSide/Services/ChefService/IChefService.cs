@@ -7,7 +7,7 @@ namespace RecommendationEngineClientSide.Services.ChefServices
 {
     public interface IChefService
     {
-        Task<SocketResponseDTO> GetMenuListAsync(DateTime date);
+        Task<MenuListDto> GetMenuListAsync(DateTime date);
         Task<SocketResponseDTO> AddDailyMenuAsync(NewDailyMenuDto newDailyMenuDto);
     }
 }

@@ -5,6 +5,7 @@ using RecommendationEngineServerSide.Common.Exceptions;
 using RecommendationEngineServerSide.DAL.Model;
 using RecommendationEngineServerSide.DAL.UnitfWork;
 using RecommendationEngineServerSide.Service.NotificationService;
+using RecommendationEngineServerSide.Service.RecommendationService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,39 +18,40 @@ namespace RecommendationEngineServerSide.Service.ChefService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly INotificationService _notificationService;
+        private readonly IRecommendationService _recommendationService;
 
-        public ChefService(IUnitOfWork unitOfWork, INotificationService notificationService)
+        public ChefService(IUnitOfWork unitOfWork, INotificationService notificationService, IRecommendationService recommendationService)
         {
             _unitOfWork = unitOfWork;
             _notificationService = notificationService;
+            _recommendationService = recommendationService;
         }
 
         public async Task<MenuListDTO> GetMenuList(DateTime date)
         {
-            var menuList = (await _unitOfWork.Menu.GetAll()).Where(a=>!a.ISDeleted);
-            if (menuList != null)
+            var recommendedMenuItems = await _recommendationService.GetRecommendedMenuItems();
+
+            MenuListDTO dailyMenuList = new MenuListDTO()
             {
-                MenuListDTO dailyMenuList = new MenuListDTO()
+                Menu = new List<ListMenuDTO>()
+            };
+
+            foreach (var menuItem in recommendedMenuItems)
+            {
+                var item = new ListMenuDTO()
                 {
-                    Menu = new List<ListMenuDTO>()
+                    MenuItemName = menuItem.MenuItemName,
+                    MenuItemType = menuItem.MenuItemType,
+                    Price = menuItem.Price,
+                    Rating = menuItem.AverageRating,
+                    OrderCount = menuItem.OrderCount 
                 };
-                foreach(var menuItem in menuList)
-                {
-                    var item = new ListMenuDTO()
-                    {
-                        MenuItemName = menuItem.MenuName,
-                        MenuItemType = menuItem.MenuType?.MenuTypeName,
-                        Price = menuItem.Price,
-                    };
-                    dailyMenuList.Menu.Add(item);
-                }
-                return dailyMenuList;
+                dailyMenuList.Menu.Add(item);
             }
-            else
-            {
-                throw DailyMenuException.MenuNotPresentException();
-            }
-        }
+
+            return dailyMenuList;
+        
+    }
 
         public async Task AddDailyMenu(NewDailyMenuDTO menuList)
         {

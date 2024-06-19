@@ -14,7 +14,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             _loginService = loginService;
         }
 
-        public async Task<string> PromptLoginAsync()
+        public async Task<LoginRequestDto> PromptLoginAsync()
         {
             Console.WriteLine("Enter username:");
             string username = Console.ReadLine();
@@ -28,7 +28,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 Password = password
             };
 
-            string role = await _loginService.HandleLoginAsync(loginRequest);
+            var role = await _loginService.HandleLoginAsync(loginRequest);
             return role;
         }
     }

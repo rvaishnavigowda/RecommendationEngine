@@ -32,7 +32,7 @@ namespace RecommendationEngineServerSide.Controller
                 case "AdminController":
                     return await RouteAdminControllerActions(actionName, data);
 
-                case "EmplyoeeController":
+                case "EmployeeController":
                     return await RouteEmployeeControllerActions(actionName, data);
 
                 case "ChefController":

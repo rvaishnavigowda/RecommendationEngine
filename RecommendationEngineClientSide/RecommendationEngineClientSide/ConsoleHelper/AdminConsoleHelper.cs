@@ -10,6 +10,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         private readonly IAdminService _adminService;
 
         public bool ShouldLogout { get; private set; }
+        private  DateTime _loginDate;
 
         public AdminConsoleHelper(IAdminService adminService)
         {
@@ -17,8 +18,9 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             ShouldLogout = false;
         }
 
-        public async Task HandleAdminRoleAsync()
+        public async Task HandleAdminRoleAsync(DateTime loginDate)
         {
+            _loginDate=loginDate;
             bool continueLoop = true;
             while (continueLoop)
             {

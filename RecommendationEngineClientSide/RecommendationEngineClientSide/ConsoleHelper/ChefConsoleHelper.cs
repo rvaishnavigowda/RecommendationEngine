@@ -10,14 +10,16 @@ namespace RecommendationEngineClientSide.ConsoleHelper
     {
         private readonly IChefService _chefService;
         public bool ShouldLogout { get; private set; }
+        private DateTime _loginDate;
         public ChefConsoleHelper(IChefService chefService)
         {
             _chefService = chefService;
             ShouldLogout = false;
         }
 
-        public async Task HandleChefRoleAsync()
+        public async Task HandleChefRoleAsync(DateTime loginDate)
         {
+            _loginDate = loginDate;
             bool continueLoop = true;
             while (continueLoop)
             {
@@ -50,20 +52,14 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             try
             {
-                Console.WriteLine("Enter the date (YYYY-MM-DD):");
-                if (!DateTime.TryParse(Console.ReadLine(), out DateTime date))
-                {
-                    Console.WriteLine("Invalid date format. Please try again.");
-                    return;
-                }
+                var responseJson = await _chefService.GetMenuListAsync(_loginDate);
 
-                var responseJson = await _chefService.GetMenuListAsync(date);
-                // Assuming the response contains the menu list
                 if (responseJson is MenuListDto menuList)
                 {
+                    Console.WriteLine("{0,-20} {1,-15} {2,-10} {3,-10} {4,-15}", "Menu", "MenuType", "Price", "Rating", "Order Count");
                     foreach (var menuItem in menuList.Menu)
                     {
-                        Console.WriteLine($"Item: {menuItem.MenuItemName}, Type: {menuItem.MenuItemType}, Price: {menuItem.Price}, Rating: {menuItem.Rating}");
+                        Console.WriteLine("{0,-20} {1,-15} {2,-10:F2} {3,-10} {4,-15}", menuItem.MenuItemName, menuItem.MenuItemType, menuItem.Price, menuItem.Rating, menuItem.OrderCount);
                     }
                 }
                 else
@@ -77,17 +73,12 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             }
         }
 
+
         private async Task AddDailyMenuAsync()
         {
             try
             {
-                Console.WriteLine("Enter the date for the daily menu (YYYY-MM-DD):");
-                if (!DateTime.TryParse(Console.ReadLine(), out DateTime date))
-                {
-                    Console.WriteLine("Invalid date format. Please try again.");
-                    return;
-                }
-
+                
                 var menuItems = new List<MenuListItemDto>();
                 while (true)
                 {
@@ -101,7 +92,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
 
                 var newDailyMenuDto = new NewDailyMenuDto
                 {
-                    CurrentDate = date,
+                    CurrentDate = _loginDate,
                     Menu = menuItems
                 };
 

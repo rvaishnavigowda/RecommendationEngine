@@ -24,10 +24,10 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
 
         public async Task<DailyMenuDTO> GetDailyMenuList(DailyMenuDTO dailyMenu)
         {
-            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName == dailyMenu.UserName);
+            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == dailyMenu.UserName);
             if (isUserPresent != null)
             {
-                var isOrderPlaced = (await _unitOfWork.Order.GetAll()).FirstOrDefault(a => a.OrderDate == dailyMenu.CurrentDate && a.User.UserName == dailyMenu.UserName);
+                var isOrderPlaced = (await _unitOfWork.Order.GetAll()).FirstOrDefault(a => a.OrderDate == dailyMenu.CurrentDate && a.User.UserName.ToLower() == dailyMenu.UserName);
                 if (isOrderPlaced == null)
                 {
                     var menuList = new DailyMenuDTO
@@ -48,7 +48,7 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                                 Price = menuItem.Menu.Price,
                             });
                         }
-                        CalculateMenuRating(menuList);
+                        await CalculateMenuRating(menuList);
                         return menuList;
                     }
                     else
@@ -70,13 +70,13 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
         }
         public async Task<OrderDetailDTO> PlaceOrder(OrderDetailDTO orderDetailDTO)
         {
-            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName == orderDetailDTO.UserName);
+            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == orderDetailDTO.UserName);
             if (isUserPresent != null)
             {
                 var isOrderPlaced = (await _unitOfWork.Order.GetAll()).FirstOrDefault(a => a.UserId == isUserPresent.UserId && a.OrderDate.Date == orderDetailDTO.OrderDate.Date);
                 if (isOrderPlaced == null)
                 {
-                    var isMenuTypePresent = (await _unitOfWork.MenuType.GetAll()).FirstOrDefault(a => a.MenuTypeName == orderDetailDTO.OrderMenutype);
+                    var isMenuTypePresent = (await _unitOfWork.MenuType.GetAll()).FirstOrDefault(a => a.MenuTypeName?.ToLower() == orderDetailDTO.OrderMenutype);
                     if (isMenuTypePresent != null)
                     {
                         var order = new Order
@@ -92,7 +92,7 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
 
                         foreach (var orderItem in orderDetailDTO.Items)
                         {
-                            var dailyMenu = (await _unitOfWork.DailyMenu.GetAll()).FirstOrDefault(a => a.DailyMenuName == orderItem.MenuName);
+                            var dailyMenu = (await _unitOfWork.DailyMenu.GetAll()).FirstOrDefault(a => a.Menu.MenuName.ToLower() == orderItem.MenuName);
                             if (dailyMenu != null)
                             {
                                 var userOrder = new UserOrder
@@ -129,39 +129,70 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
 
         public async Task GiveFeedback(FeedbackDTO feedbackDTO)
         {
-            var isUserPresent=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName == feedbackDTO.UserName);
+            var isUserPresent=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName.ToLower() == feedbackDTO.UserName);
             if (isUserPresent != null)
             {
-                var isOrderPlaced = (await _unitOfWork.UserOrder.GetAll()).FirstOrDefault(a => a.DailyMenu.DailyMenuName == feedbackDTO.MenuName);
+                var isOrderPlaced = (await _unitOfWork.UserOrder.GetAll()).FirstOrDefault(a => a.DailyMenu.Menu.MenuName.ToLower() == feedbackDTO.MenuName);
                 if (isOrderPlaced != null)
                 {
-                    var isMenuItemPresent=(await _unitOfWork.DailyMenu.GetAll()).FirstOrDefault(a=>a.Menu.MenuName == feedbackDTO.MenuName);
+                    var isMenuItemPresent=(await _unitOfWork.DailyMenu.GetAll()).FirstOrDefault(a=>a.Menu.MenuName.ToLower() == feedbackDTO.MenuName);
                     if (isMenuItemPresent != null)
                     {
-                        Feedback feedback = new Feedback()
+                        var isFeedbackGiven = (await _unitOfWork.Feedback.GetAll()).Where(a => a.FeedbackDate == feedbackDTO.FeedbackDate && a.MenuId == isMenuItemPresent.MenuId);
+                        if(!isFeedbackGiven.Any())
                         {
-                            MenuId = isMenuItemPresent.MenuId,
-                            UserId = isUserPresent.UserId,
-                            Rating = feedbackDTO.Rating,
-                            Comment = feedbackDTO.Comment,
-                            FeedbackDate = feedbackDTO.FeedbackDate,
-                            ISDeleted = false,
-                        };
-                        await _unitOfWork.Feedback.Add(feedback);
-                        await _unitOfWork.Save();
+                            Feedback feedback = new Feedback()
+                            {
+                                MenuId = isMenuItemPresent.MenuId,
+                                UserId = isUserPresent.UserId,
+                                Rating = feedbackDTO.Rating,
+                                Comment = feedbackDTO.Comment,
+                                FeedbackDate = feedbackDTO.FeedbackDate,
+                                ISDeleted = false,
+                            };
+                            await _unitOfWork.Feedback.Add(feedback);
+                            await _unitOfWork.Save();
+                        }
+                        else
+                        {
+                            throw EmployeeException.HandleFeedbackGiven();
+                        }
                     }
+                    else
+                    {
+                        throw AdminException.HandleMenuItemNotFound();
+                    }
+                }
+                else
+                {
+                    throw EmployeeException.HandleOrderNotPlaced();
+                }
+            }
+            else
+            {
+                throw LoginException.NoUserPresent();
+            }
+        }
+
+        private async Task CalculateMenuRating(DailyMenuDTO dailyMenu)
+        {
+            var feedbackList = await _unitOfWork.Feedback.GetAll();
+
+            foreach (var menuItem in dailyMenu.MenuList)
+            {
+                var ratings = feedbackList.Where(f => f.Menu.MenuName == menuItem.MenuName)
+                                          .Select(f => f.Rating);
+
+                if (ratings.Any())
+                {
+                    menuItem.Rating = (ratings.Average());
+                }
+                else
+                {
+                    menuItem.Rating = 0; 
                 }
             }
         }
-        private async Task CalculateMenuRating(DailyMenuDTO dailyMenu)
-        {
-            var menuItemRating = (await _unitOfWork.Feedback.GetAll());
-            foreach(var menuItem in dailyMenu.MenuList)
-            {
-                menuItem.Rating = (await _unitOfWork.Feedback.GetAll()).FirstOrDefault(a => a.Menu.MenuName == menuItem.MenuName).Rating;
 
-            }
-            
-        }
     }
 }

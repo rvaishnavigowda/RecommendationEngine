@@ -6,7 +6,7 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
     public interface IEmployeeService
     {
         Task<DailyMenuResponseDto> GetDailyMenuAsync(DailyMenuRequestDto dailyMenuRequestDto);
-        Task<SocketResponseDTO> PlaceOrderAsync(OrderDetailRequestDto orderDetailRequestDto);
+        Task<OrderDetailRequestDto> PlaceOrderAsync(OrderDetailRequestDto orderDetailRequestDto);
         Task<SocketResponseDTO> GiveFeedbackAsync(FeedbackDto feedbackDto);
     }
 }

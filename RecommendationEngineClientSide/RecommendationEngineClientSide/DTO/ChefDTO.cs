@@ -21,7 +21,9 @@ namespace RecommendationEngineClientSide.ChefDTO
         public string MenuItemName { get; set; }
         public string MenuItemType { get; set; }
         public decimal Price { get; set; }
-        public int Rating { get; set; }
+        public double Rating { get; set; }
+        public int OrderCount { get; set; }
+
     }
 
     public class MenuListDto : SocketResponseDTO

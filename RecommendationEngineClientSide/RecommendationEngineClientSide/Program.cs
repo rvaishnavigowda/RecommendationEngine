@@ -16,6 +16,7 @@ namespace RecommendationEngineClient
         {
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddClientServices();
+            serviceCollection.AddSingleton<LoginDateRepository>(provider => new LoginDateRepository("loginDates.db"));
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
             Console.WriteLine("Welcome to the Recommendation Engine");
@@ -33,22 +34,37 @@ namespace RecommendationEngineClient
             var adminConsoleHelper = new AdminConsoleHelper(serviceProvider.GetService<IAdminService>());
             var chefConsoleHelper = new ChefConsoleHelper(serviceProvider.GetService<IChefService>());
             var employeeConsoleHelper = new EmployeeConsoleHelper(serviceProvider.GetService<IEmployeeService>());
+            var loginDateRepository = serviceProvider.GetService<LoginDateRepository>();
 
             while (true)
             {
-                string loginResponse = await loginConsoleHelper.PromptLoginAsync();
-                string role = loginResponse.ToLower();
+                var loginResponse = await loginConsoleHelper.PromptLoginAsync();
+                string role = loginResponse.UserRole.ToLower();
+                DateTime loginDate = DateTime.MinValue;
+                if (role == "chef")
+                {
+                    Console.WriteLine("Enter the date (YYYY-MM-DD) for login:");
+                    if (!DateTime.TryParse(Console.ReadLine(), out loginDate))
+                    {
+                        Console.WriteLine("Invalid date format. Please try again.");
+                        continue;
+                    }
 
+                    await loginDateRepository.SaveLoginDateAsync("chef", loginDate);
+                }else
+                {
+                    loginDate = (DateTime)await loginDateRepository.GetLastLoginDateAsync("chef");
+                }
                 switch (role)
                 {
                     case "admin":
                         await adminConsoleHelper.HandleAdminRoleAsync();
                         break;
                     case "chef":
-                        await chefConsoleHelper.HandleChefRoleAsync();
+                        await chefConsoleHelper.HandleChefRoleAsync(loginDate);
                         break;
                     case "employee":
-                        await employeeConsoleHelper.HandleEmployeeRoleAsync();
+                        await employeeConsoleHelper.HandleEmployeeRoleAsync(loginResponse.UserName, loginDate);
                         break;
                     default:
                         Console.WriteLine("Unknown role.");

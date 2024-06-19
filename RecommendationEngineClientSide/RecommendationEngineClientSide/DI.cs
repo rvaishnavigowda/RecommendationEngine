@@ -2,6 +2,7 @@
 using RecommendationEngineClientSide.ConsoleHelper;
 using RecommendationEngineClientSide.Services.AdminServices;
 using RecommendationEngineClientSide.Services.ChefServices;
+using RecommendationEngineClientSide.Services.EmployeeServices;
 using RecommendationEngineClientSide.Services.LoginServices;
 using RecommendationEngineClientSide.Services.RequestServices;
 
@@ -15,8 +16,11 @@ namespace RecommendationEngineClientSide
             services.AddTransient<ILoginService, LoginService>();
             services.AddTransient<IAdminService, AdminService>();
             services.AddTransient<IChefService, ChefService>();
+            services.AddTransient<IEmployeeService, EmployeeService>();
             services.AddTransient<LoginConsoleHelper>();
             services.AddTransient<AdminConsoleHelper>();
+            services.AddTransient<ChefConsoleHelper>(); 
+            services.AddTransient<EmployeeConsoleHelper>();
             return services;
         }
     }

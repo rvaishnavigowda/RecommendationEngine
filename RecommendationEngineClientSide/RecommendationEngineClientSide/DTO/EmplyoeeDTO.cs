@@ -18,17 +18,18 @@
         public int Rating { get; set; }
     }
 
-    public class OrderDetailRequestDto
+    public class OrderDetailRequestDto : SocketResponseDTO
     {
         public string UserName { get; set; }
         public DateTime OrderDate { get; set; }
+        public string OrderMenutype { get; set; }
         public IList<OrderItemDto> Items { get; set; }
     }
 
     public class OrderItemDto
     {
         public string MenuName { get; set; }
-        public int Quantity { get; set; }
+        
     }
 
     public class FeedbackDto

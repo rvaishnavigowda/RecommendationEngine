@@ -56,7 +56,7 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 return new ResponseMenuDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message = ex.Message
                 };
             }
         }
@@ -113,7 +113,7 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 return new SocketResponseDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message = ex.Message
                 };
             }
         }
@@ -151,7 +151,7 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 return new SocketResponseDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message =  ex.Message
                 };
             }
         }

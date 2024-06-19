@@ -12,4 +12,11 @@ namespace RecommendationEngineServerSide.Common.Enum
         NextDayMenuRecommendation = 2,
         AvailabilityStatusOfMenuItems = 3
     }
+
+    public enum UserType
+    {
+        Employee=1,
+        Chef,
+        Admin
+    }
 }

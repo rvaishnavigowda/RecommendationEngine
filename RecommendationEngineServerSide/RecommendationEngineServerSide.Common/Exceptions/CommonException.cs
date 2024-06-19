@@ -15,5 +15,10 @@ namespace RecommendationEngineServerSide.Common.Exceptions
         {
             return new CommonException("Improper input. Please fill the details");
         }
+
+        public static CommonException HandleNullNotification()
+        {
+            return new CommonException("There are no notifications to show");
+        }
     }
 }

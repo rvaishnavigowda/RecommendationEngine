@@ -5,6 +5,7 @@ using RecommendationEngineServerSide.DAL.Repository.MenuTypeRepo;
 using RecommendationEngineServerSide.DAL.Repository.NotificationRepo;
 using RecommendationEngineServerSide.DAL.Repository.NotificationTypeRepo;
 using RecommendationEngineServerSide.DAL.Repository.OrderRepo;
+using RecommendationEngineServerSide.DAL.Repository.UserNotificationRepo;
 using RecommendationEngineServerSide.DAL.Repository.UserOrderRepo;
 using RecommendationEngineServerSide.DAL.Repository.UserRepo;
 using RecommendationEngineServerSide.DAL.Repository.UserTypeRepo;
@@ -28,6 +29,8 @@ namespace RecommendationEngineServerSide.DAL.UnitfWork
         INotificationRepository Notification { get; }
 
         INotificationTypeRepository NotificationType { get; }
+        IUserNotificationRepository UserNotification { get; }
+
 
         Task Save(); 
 

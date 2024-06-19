@@ -21,8 +21,12 @@ namespace RecommendationEngineClientSide.ChefDTO
         public string MenuItemName { get; set; }
         public string MenuItemType { get; set; }
         public decimal Price { get; set; }
+        //public double AverageRating { get; set; }
+        //public double SentimentScore { get; set; }
         public double Rating { get; set; }
         public int OrderCount { get; set; }
+
+        //public double CombinedRating { get; set; }
 
     }
 

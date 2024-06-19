@@ -17,13 +17,26 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             ShouldLogout = false;
         }
 
-        public async Task HandleChefRoleAsync(DateTime loginDate)
+        public async Task HandleChefRoleAsync(string userName, DateTime loginDate)
         {
             _loginDate = loginDate;
+            var notificationsResponse = await _chefService.FetchNotificationsAsync(userName);
+            if (notificationsResponse.Status == "Success")
+            {
+                Console.WriteLine("Notifications:");
+                foreach (var notification in notificationsResponse.Notifications)
+                {
+                    Console.WriteLine($"- {notification}\n");
+                }
+            }
+            else
+            {
+                Console.WriteLine($" {notificationsResponse.Message}");
+            }
             bool continueLoop = true;
             while (continueLoop)
             {
-                Console.WriteLine("Welcome, Chef! Choose an option:");
+                Console.WriteLine("\nWelcome, Chef! Choose an option:");
                 Console.WriteLine("1. Get Menu List");
                 Console.WriteLine("2. Add Daily Menu");
                 Console.WriteLine("3. Logout");
@@ -48,6 +61,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             }
         }
 
+
         private async Task GetMenuListAsync()
         {
             try
@@ -56,10 +70,23 @@ namespace RecommendationEngineClientSide.ConsoleHelper
 
                 if (responseJson is MenuListDto menuList)
                 {
-                    Console.WriteLine("{0,-20} {1,-15} {2,-10} {3,-10} {4,-15}", "Menu", "MenuType", "Price", "Rating", "Order Count");
-                    foreach (var menuItem in menuList.Menu)
+                    var groupedMenuItems = menuList.Menu
+                        .GroupBy(menuItem => menuItem.MenuItemType.ToLower())
+                        .OrderBy(group => group.Key);
+
+                    foreach (var group in groupedMenuItems)
                     {
-                        Console.WriteLine("{0,-20} {1,-15} {2,-10:F2} {3,-10} {4,-15}", menuItem.MenuItemName, menuItem.MenuItemType, menuItem.Price, menuItem.Rating, menuItem.OrderCount);
+                        Console.WriteLine($"\n{char.ToUpper(group.Key[0]) + group.Key.Substring(1)}:");
+                        Console.WriteLine(new string('-', 57));                       
+                        Console.WriteLine("{0,-20} {1,-10} {2,-10} {3,-15}", "Menu", "Price", "Rating", "Order Count");
+                        foreach (var menuItem in group.OrderByDescending(menuItem => menuItem.Rating))
+                        {
+                            Console.WriteLine("{0,-20} {1,-10:F2} {2,-10} {3,-15}",
+                                menuItem.MenuItemName.ToLower(),
+                                menuItem.Price,
+                                menuItem.Rating,
+                                menuItem.OrderCount);
+                        }
                     }
                 }
                 else

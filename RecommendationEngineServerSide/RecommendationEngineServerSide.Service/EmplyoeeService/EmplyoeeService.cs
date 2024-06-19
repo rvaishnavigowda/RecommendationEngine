@@ -3,6 +3,7 @@ using RecommendationEngineServerSide.Common.DTO;
 using RecommendationEngineServerSide.Common.Exceptions;
 using RecommendationEngineServerSide.DAL.Model;
 using RecommendationEngineServerSide.DAL.UnitfWork;
+using RecommendationEngineServerSide.Service.NotificationService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,21 +15,31 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
     public class EmplyoeeService : IEmplyoeeService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly IMapper _mapper;   
+        private readonly INotificationService _notificationService;
 
-        public EmplyoeeService(IUnitOfWork unitOfWork, IMapper mapper)
+        public EmplyoeeService(IUnitOfWork unitOfWork, IMapper mapper, INotificationService notificationService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _notificationService = notificationService;
         }
 
+
+        public async Task<List<string>> GetNotification(string userName)
+        {
+            var userDetails = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == userName);
+            List<string> notification = new List<string>();
+            notification = await _notificationService.GetNotification(userDetails.UserId);
+            return notification;
+        }
         public async Task<DailyMenuDTO> GetDailyMenuList(DailyMenuDTO dailyMenu)
         {
             var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == dailyMenu.UserName);
             if (isUserPresent != null)
             {
-                var isOrderPlaced = (await _unitOfWork.Order.GetAll()).FirstOrDefault(a => a.OrderDate == dailyMenu.CurrentDate && a.User.UserName.ToLower() == dailyMenu.UserName);
-                if (isOrderPlaced == null)
+                var isOrderPlaced = (await _unitOfWork.Order.GetAll()).Where(a => a.OrderDate == dailyMenu.CurrentDate && a.User.UserName.ToLower() == dailyMenu.UserName).ToList();
+                if (isOrderPlaced.Count==0)
                 {
                     var menuList = new DailyMenuDTO
                     {
@@ -46,6 +57,7 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                             {
                                 MenuName = menuItem.Menu.MenuName,
                                 Price = menuItem.Menu.Price,
+                                MenuType=menuItem.Menu.MenuType.MenuTypeName
                             });
                         }
                         await CalculateMenuRating(menuList);
@@ -59,7 +71,29 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                 }
                 else
                 {
-                    throw DailyMenuException.OrderPlacedException();
+                    DailyMenuDTO dailyMenuDTO = new DailyMenuDTO()
+                    {
+                        Status="Void",
+                        Message="You have already placed the order for today.",
+                        MenuList = new List<DailyMenuList>()
+                    };
+                    foreach(var order in isOrderPlaced)
+                    {
+                        var userOrder = (await _unitOfWork.UserOrder.GetAll()).Where(a => a.OrderId == order.OrderId).ToList();
+                        foreach (var item in userOrder)
+                        {
+                            DailyMenuList dailyMenuList = new DailyMenuList()
+                            {
+                                MenuName = item.DailyMenu.Menu.MenuName,
+                                Price = item.DailyMenu.Menu.Price,
+                            };
+                            dailyMenuDTO.MenuList.Add(dailyMenuList);
+                        }
+                        
+                    }
+                    return dailyMenuDTO;
+
+                    //throw DailyMenuException.OrderPlacedException();
                 }
             }
             else
@@ -68,64 +102,96 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
             }
             
         }
+        
         public async Task<OrderDetailDTO> PlaceOrder(OrderDetailDTO orderDetailDTO)
         {
-            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == orderDetailDTO.UserName);
-            if (isUserPresent != null)
-            {
-                var isOrderPlaced = (await _unitOfWork.Order.GetAll()).FirstOrDefault(a => a.UserId == isUserPresent.UserId && a.OrderDate.Date == orderDetailDTO.OrderDate.Date);
-                if (isOrderPlaced == null)
-                {
-                    var isMenuTypePresent = (await _unitOfWork.MenuType.GetAll()).FirstOrDefault(a => a.MenuTypeName?.ToLower() == orderDetailDTO.OrderMenutype);
-                    if (isMenuTypePresent != null)
-                    {
-                        var order = new Order
-                        {
-                            OrderDate = orderDetailDTO.OrderDate,
-                            UserId = isUserPresent.UserId,
-                            MenuTypeId= isMenuTypePresent.MenuTypeId,
-                            IsDeleted = false
-                        };
-
-                        await _unitOfWork.Order.Add(order);
-                        await _unitOfWork.Save();
-
-                        foreach (var orderItem in orderDetailDTO.Items)
-                        {
-                            var dailyMenu = (await _unitOfWork.DailyMenu.GetAll()).FirstOrDefault(a => a.Menu.MenuName.ToLower() == orderItem.MenuName);
-                            if (dailyMenu != null)
-                            {
-                                var userOrder = new UserOrder
-                                {
-                                    OrderId = order.OrderId,
-                                    DailyMenuId = dailyMenu.DailyMenuId
-                                };
-                                await _unitOfWork.UserOrder.Add(userOrder);
-                            }
-                        }
-                        await _unitOfWork.Save();
-                        return new OrderDetailDTO
-                        {
-                            UserName = isUserPresent.UserName,
-                            OrderDate = order.OrderDate,
-                            Items = orderDetailDTO.Items
-                        };
-                    }
-                    else
-                    {
-                        throw AdminException.HandleMenuTypeNotFound();
-                    }
-                }
-                else
-                {
-                    throw DailyMenuException.OrderPlacedException();
-                }
-            }
-            else
+            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == orderDetailDTO.UserName.ToLower());
+            if (isUserPresent == null)
             {
                 throw LoginException.NoUserPresent();
             }
+            var isOrderPlaced = (await _unitOfWork.Order.GetAll())
+                .Where(a => a.UserId == isUserPresent.UserId && a.OrderDate.Date == orderDetailDTO.OrderDate.Date).ToList();
+
+            if (isOrderPlaced.Count>0)
+            {
+                //throw DailyMenuException.OrderPlacedException();
+                OrderDetailDTO dailyMenuDTO = new OrderDetailDTO()
+                {
+                    Status = "Void",
+                    Message = "You have already placed the order for today.",
+                    Items = new List<OrderItemDTO>()
+                };
+                foreach (var order in isOrderPlaced)
+                {
+                    var userOrder = (await _unitOfWork.UserOrder.GetAll()).Where(a => a.OrderId == order.OrderId).ToList();
+                    foreach (var item in userOrder)
+                    {
+                        OrderItemDTO dailyMenuList = new OrderItemDTO()
+                        {
+                            MenuName = item.DailyMenu.Menu.MenuName,
+                            OrderMenutype=item.Order.MenuType.MenuTypeName
+                        };
+                        dailyMenuDTO.Items.Add(dailyMenuList);
+                    }
+
+                }
+                return dailyMenuDTO;
+            }
+
+            var createdOrders = new List<Order>();
+
+            var menuTypes = orderDetailDTO.Items.GroupBy(i => i.OrderMenutype.ToLower());
+
+            foreach (var menuTypeGroup in menuTypes)
+            {
+                var menuTypeName = menuTypeGroup.Key;
+                var isMenuTypePresent = (await _unitOfWork.MenuType.GetAll())
+                    .FirstOrDefault(a => a.MenuTypeName?.ToLower() == menuTypeName);
+
+                if (isMenuTypePresent == null)
+                {
+                    throw AdminException.HandleMenuTypeNotFound();
+                }
+
+                var order = new Order
+                {
+                    OrderDate = orderDetailDTO.OrderDate,
+                    UserId = isUserPresent.UserId,
+                    MenuTypeId = isMenuTypePresent.MenuTypeId,
+                    IsDeleted = false
+                };
+
+                await _unitOfWork.Order.Add(order);
+                await _unitOfWork.Save();
+
+                createdOrders.Add(order);
+                foreach (var orderItem in menuTypeGroup)
+                {
+                    var dailyMenu = (await _unitOfWork.DailyMenu.GetAll())
+                        .FirstOrDefault(a => a.Menu.MenuName.ToLower() == orderItem.MenuName.ToLower());
+
+                    if (dailyMenu != null)
+                    {
+                        var userOrder = new UserOrder
+                        {
+                            OrderId = order.OrderId,
+                            DailyMenuId = dailyMenu.DailyMenuId
+                        };
+                        await _unitOfWork.UserOrder.Add(userOrder);
+                    }
+                }
+                await _unitOfWork.Save();
+            }
+
+            return new OrderDetailDTO
+            {
+                UserName = isUserPresent.UserName,
+                OrderDate = orderDetailDTO.OrderDate,
+                Items = orderDetailDTO.Items
+            };
         }
+
 
         public async Task GiveFeedback(FeedbackDTO feedbackDTO)
         {

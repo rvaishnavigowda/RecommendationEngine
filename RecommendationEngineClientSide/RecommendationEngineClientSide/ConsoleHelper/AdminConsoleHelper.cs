@@ -76,7 +76,8 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 {
                     MenuName = menuName.ToLower(),
                     MenuType = menuType.ToLower(),
-                    MenuPrice = menuPrice
+                    MenuPrice = menuPrice,
+                    dateCreated=_loginDate
                 };
 
                 var responseJson = await _adminService.AddMenuAsync(addMenuRequestDto);

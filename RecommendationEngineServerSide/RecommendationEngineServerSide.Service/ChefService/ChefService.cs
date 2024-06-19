@@ -27,6 +27,14 @@ namespace RecommendationEngineServerSide.Service.ChefService
             _recommendationService = recommendationService;
         }
 
+        public async Task<List<string>> GetNotification(string userName)
+        {
+            var userDetails=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName.ToLower()==userName);
+            List<string> notification = new List<string>();
+            notification = await _notificationService.GetNotification(userDetails.UserId);
+            return notification;
+        }
+
         public async Task<MenuListDTO> GetMenuList(DateTime date)
         {
             var recommendedMenuItems = await _recommendationService.GetRecommendedMenuItems();
@@ -40,8 +48,8 @@ namespace RecommendationEngineServerSide.Service.ChefService
             {
                 var item = new ListMenuDTO()
                 {
-                    MenuItemName = menuItem.MenuItemName,
-                    MenuItemType = menuItem.MenuItemType,
+                    MenuItemName = menuItem.MenuItemName.ToLower(),
+                    MenuItemType = menuItem.MenuItemType.ToLower(),
                     Price = menuItem.Price,
                     Rating = menuItem.AverageRating,
                     OrderCount = menuItem.OrderCount 
@@ -57,16 +65,37 @@ namespace RecommendationEngineServerSide.Service.ChefService
         {
             if(menuList != null)
             {
-                var menu = new DailyMenu()
+                //var menu = new DailyMenu()
+                //{
+                //    DailyMenuDate = menuList.CurrentDate,
+                //};
+                var isdailyMenuAdded=(await _unitOfWork.DailyMenu.GetAll()).Any(a=>a.DailyMenuDate==menuList.CurrentDate);
+                if(!isdailyMenuAdded)
                 {
-                    DailyMenuDate = menuList.CurrentDate,
-                };
-                foreach(var item in menuList.Menu)
+                    foreach (var item in menuList.Menu)
+                    {
+                        var menuDetails = (await _unitOfWork.Menu.GetAll()).FirstOrDefault(a => a.MenuName.ToLower() == item.MenuItemName);
+                        if (menuDetails != null)
+                        {
+                            var menu = new DailyMenu()
+                            {
+                                DailyMenuDate = menuList.CurrentDate,
+                                MenuId = menuDetails.MenuId
+                            };
+
+                            await _unitOfWork.DailyMenu.Add(menu);
+                            await _unitOfWork.Save();
+                            await UpdateNotification(menuList.CurrentDate);
+                        }
+                        else
+                        {
+                            throw MenuException.HandleWrongMenuItem();
+                        }
+                    }
+                }
+                else
                 {
-                    menu.MenuId = (await _unitOfWork.Menu.GetAll()).FirstOrDefault(a => a.MenuName == item.MenuItemName).MenuId;
-                    await _unitOfWork.DailyMenu.Add(menu);
-                    await _unitOfWork.Save();
-                    await UpdateNotification();
+                    throw MenuException.HandleDailyMenuAdded();
                 }
             }
             else
@@ -74,10 +103,10 @@ namespace RecommendationEngineServerSide.Service.ChefService
                 throw CommonException.NullInputException();
             }
         }
-        private async Task UpdateNotification()
+        private async Task UpdateNotification(DateTime date)
         {
-            int notificationTypeId = (int)NotificationTypeEnum.NewMenuItemAdded;
-            await _notificationService.AddNotification(ApplicationConstant.DailyMenuAddedNotification, notificationTypeId);
+            int notificationTypeId = (int)NotificationTypeEnum.NextDayMenuRecommendation;
+            await _notificationService.AddNotification(ApplicationConstant.DailyMenuAddedNotification, notificationTypeId, date);
         }
 
     }

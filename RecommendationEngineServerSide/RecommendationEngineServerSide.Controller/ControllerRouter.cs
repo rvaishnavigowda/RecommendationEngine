@@ -86,6 +86,10 @@ namespace RecommendationEngineServerSide.Controller
         {
             switch (actionName)
             {
+                case "HandleGetNotification":
+                    var userName= await DeserializeJson<userDto>(data);
+                    var notificationresult= await _employeeController.HandleGetNotification(userName.UserName);
+                    return await SerializeJson(notificationresult);
                 case "HandleGetDailyMenu":
                     var dailyMenuRequest = await DeserializeJson<DailyMenuDTO>(data);
                     var dailyMenuResult = await _employeeController.HandleGetDailyMenu(dailyMenuRequest.UserName, dailyMenuRequest.CurrentDate);
@@ -107,6 +111,10 @@ namespace RecommendationEngineServerSide.Controller
         {
             switch (actionName)
             {
+                case "HandleGetNotification":
+                    var requestObject = JsonSerializer.Deserialize<userDto>(data);
+                    var notificationresult = await _chefController.HandleGetNotification(requestObject.UserName);
+                    return await SerializeJson(notificationresult);
                 case "HandleGetMenuList":
                     var date = await DeserializeJson<DateTime>(data);
                     var menuListResult = await _chefController.HandleGetMenuList(date);

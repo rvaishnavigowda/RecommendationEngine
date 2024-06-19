@@ -14,6 +14,20 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
             _requestService = requestService;
         }
 
+        public async Task<NotificationDTO> FetchNotificationsAsync(string userName)
+        {
+            var fetchNotificationRequest = new
+            {
+                Controller = "ChefController",
+                Action = "HandleGetNotification",
+                Data = new { UserName = userName }
+            };
+
+            string requestJson = JsonConvert.SerializeObject(fetchNotificationRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var notificationResponse = JsonConvert.DeserializeObject<NotificationDTO>(response);
+            return notificationResponse;
+        }
         public async Task<DailyMenuResponseDto> GetDailyMenuAsync(DailyMenuRequestDto dailyMenuRequestDto)
         {
             var getDailyMenuRequest = new

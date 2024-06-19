@@ -18,6 +18,29 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
             _mapper = mapper;
         }
 
+        public async Task<NotificationDTO> HandleGetNotification(string userName)
+        {
+            try
+            {
+                var notifications = await _employeeService.GetNotification(userName);
+
+                return new NotificationDTO
+                {
+                    Status = "Success",
+                    Message = "Notifications retrieved successfully.",
+                    Notifications = notifications
+                };
+            }
+            catch (Exception ex)
+            {
+                return new NotificationDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
+
         public async Task<DailyMenuDTO> HandleGetDailyMenu(string userName, DateTime currentDate)
         {
             try
@@ -29,13 +52,16 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
                 };
 
                 var result = await _employeeService.GetDailyMenuList(dailyMenuDTO);
-
-                return new DailyMenuDTO
+                if(result.Status==null)
                 {
-                    Status = "Success",
-                    Message = "Daily menu retrieved successfully.",
-                    MenuList = result.MenuList
-                };
+                    return new DailyMenuDTO
+                    {
+                        Status = "Success",
+                        Message = "Daily menu retrieved successfully.",
+                        MenuList = result.MenuList
+                    };
+                }
+                return result;
             }
             catch (LoginException ex)
             {
@@ -58,7 +84,7 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
                 return new DailyMenuDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message =  ex.Message
                 };
             }
         }
@@ -68,14 +94,17 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
             try
             {
                 var result = await _employeeService.PlaceOrder(orderDetailDTO);
-
-                return new OrderDetailDTO
+                if( result.Status==null)
                 {
-                    Status = "Success",
-                    Message = "Order placed successfully.",
-                    OrderDate = result.OrderDate,
-                    Items = result.Items
-                };
+                    return new OrderDetailDTO
+                    {
+                        Status = "Success",
+                        Message = "Order placed successfully.",
+                        OrderDate = result.OrderDate,
+                        Items = result.Items
+                    };
+                }
+                return result;
             }
             catch (LoginException ex)
             {
@@ -98,7 +127,7 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
                 return new OrderDetailDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message = ex.Message
                 };
             }
         }
@@ -136,7 +165,7 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
                 return new SocketResponseDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message =  ex.Message
                 };
             }
         }

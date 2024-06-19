@@ -47,7 +47,7 @@ namespace RecommendationEngineServerSide.Service.AdminService
                         };
                         await _unitOfWork.Menu.Add(menu);
                         await _unitOfWork.Save();
-                        await UpdateNotification(menu.MenuName, menuDTO.MenuType);
+                        await UpdateNotification(menu.MenuName, menuDTO.MenuType,menuDTO.dateCreated);
 
                     }
                     else if(isMenuItemPresent!=null && isMenuItemPresent.ISDeleted)
@@ -66,7 +66,7 @@ namespace RecommendationEngineServerSide.Service.AdminService
                         };
                         await _unitOfWork.Menu.Add(menu);
                         await _unitOfWork.Save();
-                        await UpdateNotification(menu.MenuName, menuDTO.MenuType);
+                        await UpdateNotification(menu.MenuName, menuDTO.MenuType, menuDTO.dateCreated);
                     }
                     else
                     {
@@ -84,6 +84,10 @@ namespace RecommendationEngineServerSide.Service.AdminService
             }
         }
 
+        //public async Task GetNotification()
+        //{
+        //    _notificationService.Get
+        //}
         public async Task<FetchMenuDTO> GetMenuDetailsByName(string menuName)
         {
             var isMenuNamePresent=(await _unitOfWork.Menu.GetAll()).Where(a=>a.MenuName.ToLower()==menuName && a.ISDeleted==false).ToList() ;
@@ -194,10 +198,11 @@ namespace RecommendationEngineServerSide.Service.AdminService
             }  
         }
 
-        private async Task UpdateNotification(string menuName, string menuType)
+        private async Task UpdateNotification(string menuName, string menuType, DateTime date)
         {
             int notificationTypeId = (int)NotificationTypeEnum.NewMenuItemAdded;
-            await _notificationService.AddNotification(ApplicationConstant.NewMenuItemNotification, notificationTypeId);
+            string notification = ApplicationConstant.NewMenuItemNotification + ": " + menuName;
+            await _notificationService.AddNotification(notification, notificationTypeId, date);
         }
     }
 }

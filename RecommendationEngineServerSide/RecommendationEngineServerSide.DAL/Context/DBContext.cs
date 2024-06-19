@@ -31,6 +31,8 @@ namespace RecommendationEngineServerSide.DAL.Context
 
         public DbSet<NotificationType> notificationType { get; set; }
 
+        public DbSet<UserNotification> UserNotification { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

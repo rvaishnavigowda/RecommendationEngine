@@ -16,6 +16,21 @@ namespace RecommendationEngineClientSide.Services.ChefServices
             _requestService = requestService;
         }
 
+        public async Task<NotificationDTO> FetchNotificationsAsync(string userName)
+        {
+            var fetchNotificationRequest = new
+            {
+                Controller = "ChefController",
+                Action = "HandleGetNotification",
+                Data = new { UserName = userName }
+            };
+
+            string requestJson = JsonConvert.SerializeObject(fetchNotificationRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var notificationResponse = JsonConvert.DeserializeObject<NotificationDTO>(response);
+            return notificationResponse;
+        }
+
         public async Task<MenuListDto> GetMenuListAsync(DateTime date)
         {
             var getMenuListRequest = new

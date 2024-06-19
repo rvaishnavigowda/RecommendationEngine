@@ -13,6 +13,7 @@
         public string MenuName { get; set; }
         public string MenuType { get; set; }
         public decimal MenuPrice { get; set; }
+        public DateTime dateCreated { get; set; }
     }
 
     public class UpdateMenuRequestDto : AddMenuRequestDto
@@ -39,5 +40,8 @@
     {
         public IList<FetchMenuResponseDTO> MenuList { get; set; }
     }
-
+    public class NotificationDTO : SocketResponseDTO
+    {
+        public List<string> Notifications { get; set; }
+    }
 }

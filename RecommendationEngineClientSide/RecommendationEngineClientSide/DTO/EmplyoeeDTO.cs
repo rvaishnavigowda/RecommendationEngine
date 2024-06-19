@@ -15,6 +15,7 @@
     {
         public string MenuName { get; set; }
         public decimal Price { get; set; }
+        public string MenuType { get; set; }
         public int Rating { get; set; }
     }
 
@@ -22,14 +23,15 @@
     {
         public string UserName { get; set; }
         public DateTime OrderDate { get; set; }
-        public string OrderMenutype { get; set; }
+        
         public IList<OrderItemDto> Items { get; set; }
     }
 
     public class OrderItemDto
     {
         public string MenuName { get; set; }
-        
+        public string OrderMenutype { get; set; }
+
     }
 
     public class FeedbackDto

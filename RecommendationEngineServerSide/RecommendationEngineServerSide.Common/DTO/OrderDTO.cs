@@ -11,13 +11,13 @@ namespace RecommendationEngineServerSide.Common.DTO
         public string UserName { get; set; }
         public DateTime OrderDate { get; set; }
 
-        public string OrderMenutype { get; set; }
+        
         public IList<OrderItemDTO> Items { get; set; } = new List<OrderItemDTO>();
     }
 
     public class OrderItemDTO
     {
         public string MenuName { get; set; }
-        public int Quantity { get; set; }
+        public string OrderMenutype { get; set; }
     }
 }

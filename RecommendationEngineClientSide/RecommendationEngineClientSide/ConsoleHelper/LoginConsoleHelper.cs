@@ -24,7 +24,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
 
             var loginRequest = new LoginRequestDto
             {
-                UserName = username,
+                UserName = username.ToLower(),
                 Password = password
             };
 

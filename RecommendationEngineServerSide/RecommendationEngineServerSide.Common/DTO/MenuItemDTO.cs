@@ -15,5 +15,6 @@ namespace RecommendationEngineServerSide.Common.DTO
         public double AverageRating { get; set; }
         public double SentimentScore { get; set; }
         public int OrderCount { get; set; }
+        public double CombinedRating { get; set; }
     }
 }

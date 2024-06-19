@@ -13,6 +13,7 @@ namespace RecommendationEngineServerSide.Common.DTO
         public string MenuType { get; set; }
 
         public decimal MenuPrice { get; set; }
+        public DateTime dateCreated { get; set; }
     }
 
     public class UpdateMenuDTO : MenuDTO

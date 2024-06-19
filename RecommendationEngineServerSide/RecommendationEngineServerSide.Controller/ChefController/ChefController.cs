@@ -18,6 +18,28 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
             _mapper = mapper;
         }
 
+        public async Task<NotificationDTO> HandleGetNotification(string userName)
+        {
+            try
+            {
+                var notifications = await _chefService.GetNotification(userName);
+
+                return new NotificationDTO
+                {
+                    Status = "Success",
+                    Message = "Notifications retrieved successfully.",
+                    Notifications = notifications
+                };
+            }
+            catch (Exception ex)
+            {
+                return new NotificationDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<MenuListDTO> HandleGetMenuList(DateTime date)
         {
             try
@@ -44,7 +66,7 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
                 return new MenuListDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message =   ex.Message
                 };
             }
         }
@@ -74,7 +96,7 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
                 return new SocketResponseDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message = ex.Message
                 };
             }
         }

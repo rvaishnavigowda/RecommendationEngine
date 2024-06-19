@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecommendationEngineServerSide.DAL.Context;
 
@@ -11,9 +12,11 @@ using RecommendationEngineServerSide.DAL.Context;
 namespace RecommendationEngineServerSide.DAL.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20240619070856_Added Junction table to notification")]
+    partial class AddedJunctiontabletonotification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,29 +241,6 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserNotification", b =>
-                {
-                    b.Property<int>("UserNotificationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserNotificationId"));
-
-                    b.Property<int>("NotificationId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserNotificationId");
-
-                    b.HasIndex("NotificationId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserNotification");
-                });
-
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserOrder", b =>
                 {
                     b.Property<int>("UserOrderId")
@@ -383,25 +363,6 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("UserType");
-                });
-
-            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserNotification", b =>
-                {
-                    b.HasOne("RecommendationEngineServerSide.DAL.Model.Notification", "Notification")
-                        .WithMany()
-                        .HasForeignKey("NotificationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RecommendationEngineServerSide.DAL.Model.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Notification");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserOrder", b =>

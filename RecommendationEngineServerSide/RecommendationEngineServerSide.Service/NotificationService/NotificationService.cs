@@ -25,6 +25,7 @@ namespace RecommendationEngineServerSide.Service.NotificationService
             {
                 NotificationMessage = notificationMessage,
                 NotificationTypeId = notificationType,
+                NotificationDate=notificationDate,
                 IsDeleted = false
             };
             await _unitOfWork.Notification.Create(notification);
@@ -70,7 +71,7 @@ namespace RecommendationEngineServerSide.Service.NotificationService
                             else if(isUserPrsent.UserType.UserTypeName.ToLower() == "employee")
                             {
                                 notificationList.Add(listItem.NotificationMessage);
-                                notificationList.Add(listItem.NotificationMessage);
+                                
                                 UserNotification userNotification = new UserNotification()
                                 {
                                     UserId = userId,

@@ -198,8 +198,8 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
             var isUserPresent=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName.ToLower() == feedbackDTO.UserName);
             if (isUserPresent != null)
             {
-                var isOrderPlaced = (await _unitOfWork.UserOrder.GetAll()).FirstOrDefault(a => a.DailyMenu.Menu.MenuName.ToLower() == feedbackDTO.MenuName);
-                if (isOrderPlaced != null)
+                var orderDetails = (await _unitOfWork.UserOrder.GetAll()).FirstOrDefault(a => a.DailyMenu.Menu.MenuName.ToLower() == feedbackDTO.MenuName && a.Order.OrderDate==feedbackDTO.FeedbackDate && a.Order.UserId==isUserPresent.UserId);
+                if (orderDetails != null)
                 {
                     var isMenuItemPresent=(await _unitOfWork.DailyMenu.GetAll()).FirstOrDefault(a=>a.Menu.MenuName.ToLower() == feedbackDTO.MenuName);
                     if (isMenuItemPresent != null)

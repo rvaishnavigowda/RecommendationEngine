@@ -36,5 +36,10 @@ namespace RecommendationEngineServerSide.Common.Exceptions
         {
             return new AdminException("The menu item is already deleted.");
         }
+
+        public static AdminException HandleNoMenu()
+        {
+            return new AdminException("The menu item doesn't have any items.");
+        }
     }
 }

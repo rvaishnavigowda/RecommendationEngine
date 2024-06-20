@@ -18,7 +18,7 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
         {
             var fetchNotificationRequest = new
             {
-                Controller = "ChefController",
+                Controller = "EmployeeController",
                 Action = "HandleGetNotification",
                 Data = new { UserName = userName }
             };

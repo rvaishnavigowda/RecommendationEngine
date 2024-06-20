@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using RecommendationEngineClientSide.ChefDTO;
 using RecommendationEngineClientSide.DTO;
 using RecommendationEngineClientSide.Services.RequestServices;
 using System;
@@ -48,6 +49,19 @@ namespace RecommendationEngineClientSide.Services.AdminServices
             return fetchResponse;
         }
 
+        public async Task<MenuListDto> GetAllMenuAsync()
+        {
+            var fetchMenuRequest = new
+            {
+                Controller = "AdminController",
+                Action = "GetAllMenu",
+            };
+
+            string requestJson = JsonConvert.SerializeObject(fetchMenuRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var fetchResponse = JsonConvert.DeserializeObject<MenuListDto>(response);
+            return fetchResponse;
+        }
         public async Task<SocketResponseDTO> UpdateMenuAsync(UpdateMenuRequestDto updateMenuRequestDto)
         {
             var updateMenuRequest = new

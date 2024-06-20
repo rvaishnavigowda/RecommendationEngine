@@ -129,20 +129,46 @@ namespace RecommendationEngineServerSide.Service.AdminService
                 }
                 else if(isMenuItemPresent.ISDeleted)
                 {
-                    AdminException.HandleMenuItemDeleted();
+                    throw AdminException.HandleMenuItemDeleted();
                 }
                 else
                 {
-                    AdminException.HandleMenuItemNotFound();
+                   throw  AdminException.HandleMenuItemNotFound();
                 }
             }
             else
             {
-                CommonException.NullInputException();
+                throw CommonException.NullInputException();
             }
            
         }
 
+        public async Task<MenuListDTO> GetAllMenu()
+        {
+            var menuList=(await _unitOfWork.Menu.GetAll()).Where(a=>a.ISDeleted==false).ToList();
+            if(menuList!=null)
+            {
+                var menu = new MenuListDTO()
+                {
+                    Menu = new List<ListMenuDTO>()
+                };
+                foreach(var item in menuList)
+                {
+                    var menuItem = new ListMenuDTO()
+                    {
+                        MenuItemName = item.MenuName,
+                        Price = item.Price,
+                        MenuItemType = item.MenuType.MenuTypeName
+                    };
+                    menu.Menu.Add(menuItem);
+                }
+                return menu;
+            }
+            else
+            {
+                throw AdminException.HandleNoMenu();
+            }
+        }
         public async Task DeleteMenu(DeleteMenuDTO deleteMenuDTO)
         {
             if (deleteMenuDTO!=null)
@@ -158,17 +184,17 @@ namespace RecommendationEngineServerSide.Service.AdminService
                     }
                     else
                     {
-                        AdminException.HandleMenuItemAlreadyDeleted();
+                        throw AdminException.HandleMenuItemAlreadyDeleted();
                     }
                 }
                 else
                 {
-                    AdminException.HandleMenuItemNotFound();
+                    throw AdminException.HandleMenuItemNotFound();
                 }
             }
            else
             {
-                CommonException.NullInputException ();
+                throw CommonException.NullInputException ();
             }
         }
 

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NLog" Version="5.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\RecommendationEngineServerSide.Common\RecommendationEngineServerSide.Common.csproj" />
     <ProjectReference Include="..\RecommendationEngineServerSide.DAL\RecommendationEngineServerSide.DAL.csproj" />
   </ItemGroup>

@@ -117,7 +117,23 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 };
             }
         }
-
+        public async Task<MenuListDTO> GetAllMenu()
+        {
+            try
+            {
+                var menuList=await _adminService.GetAllMenu();
+                menuList.Status = "Success";
+                return menuList;
+            }
+            catch(Exception ex)
+            {
+                return new MenuListDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<SocketResponseDTO> DeleteMenu(DeleteMenuDTO deleteMenuDTO)
         {
             try
@@ -155,5 +171,7 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 };
             }
         }
+
+        
     }   
 }

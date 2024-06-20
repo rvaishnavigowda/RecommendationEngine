@@ -103,6 +103,15 @@ namespace RecommendationEngineServerSide.Service.ChefService
                 throw CommonException.NullInputException();
             }
         }
+
+        public async Task GetOrders(DateTime date)
+        {
+            var isDailyMenuRolled=(await _unitOfWork.DailyMenu.GetAll()).Where(a=>a.DailyMenuDate.Equals(date)).ToList();
+            if(isDailyMenuRolled.Count>0)
+            {
+
+            }
+        }
         private async Task UpdateNotification(DateTime date)
         {
             int notificationTypeId = (int)NotificationTypeEnum.NextDayMenuRecommendation;

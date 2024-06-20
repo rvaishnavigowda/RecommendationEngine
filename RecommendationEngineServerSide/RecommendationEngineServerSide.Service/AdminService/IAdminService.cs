@@ -15,5 +15,6 @@ namespace RecommendationEngineServerSide.Service.AdminService
         Task UpdateMenu(UpdateMenuDTO updateMenuDTO);
 
         Task DeleteMenu(DeleteMenuDTO deleteMenuDTO);
+        Task<MenuListDTO> GetAllMenu();
     }
 }

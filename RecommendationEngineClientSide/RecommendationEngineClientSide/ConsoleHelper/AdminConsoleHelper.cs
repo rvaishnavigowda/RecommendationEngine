@@ -1,4 +1,5 @@
-﻿using RecommendationEngineClientSide.DTO;
+﻿using RecommendationEngineClientSide.ChefDTO;
+using RecommendationEngineClientSide.DTO;
 using RecommendationEngineClientSide.Services.AdminServices;
 using System;
 using System.Threading.Tasks;
@@ -28,7 +29,8 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 Console.WriteLine("1. Add Menu");
                 Console.WriteLine("2. Update Menu");
                 Console.WriteLine("3. Delete Menu");
-                Console.WriteLine("4. Logout");
+                Console.WriteLine("4. Display Menu List");
+                Console.WriteLine("5. Logout");
                 string choice = Console.ReadLine();
 
                 // Handle admin choices here
@@ -44,6 +46,9 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                         await DeleteMenuAsync();
                         break;
                     case "4":
+                        await GetAllMenuAsync();
+                        break;
+                    case "5":
                         continueLoop = false;
                         ShouldLogout = true;
                         Console.WriteLine("Logging out...");
@@ -99,7 +104,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 var fetchMenuRequestDto = new FetchMenuRequestDTO { MenuName = menuName.ToLower() };
                 var fetchResponse = await _adminService.FetchMenuDetailsAsync(fetchMenuRequestDto);
 
-                if (fetchResponse.Status == "failure")
+                if (fetchResponse.Status == "Failure")
                 {
                     Console.WriteLine(fetchResponse.Message);
                     return;
@@ -172,6 +177,42 @@ namespace RecommendationEngineClientSide.ConsoleHelper
 
                 var responseJson = await _adminService.DeleteMenuAsync(deleteMenuRequestDto);
                 Console.WriteLine(responseJson.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+        private async Task GetAllMenuAsync()
+        {
+            try
+            {
+                var response = await _adminService.GetAllMenuAsync();
+                if (response is MenuListDto menuList)
+                {
+                    var groupedMenuItems = menuList.Menu
+                        .GroupBy(menuItem => menuItem.MenuItemType.ToLower())
+                        .OrderBy(group => group.Key);
+
+                    foreach (var group in groupedMenuItems)
+                    {
+                        Console.WriteLine($"\n{char.ToUpper(group.Key[0]) + group.Key.Substring(1)}:");
+                        Console.WriteLine(new string('-', 37));
+                        Console.WriteLine("{0,-20} {1,-10}", "Menu", "Price");
+                        foreach (var menuItem in group.OrderByDescending(menuItem => menuItem.Rating))
+                        {
+                            Console.WriteLine("{0,-20} {1,-10:F2}",
+                                menuItem.MenuItemName.ToLower(),
+                                menuItem.Price
+                                );
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(response.Message);
+                }
             }
             catch (Exception ex)
             {

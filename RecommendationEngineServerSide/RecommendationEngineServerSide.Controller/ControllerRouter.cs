@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Microsoft.Identity.Client;
 using RecommendationEngineServerSide.Common.DTO;
 using RecommendationEngineServerSide.Controller.AdminControllers;
 using RecommendationEngineServerSide.Controller.ChefControllers;
@@ -77,6 +78,10 @@ namespace RecommendationEngineServerSide.Controller
                     var fetchMenuRequestDto = await DeserializeJson<FetchMenuRequestDTO>(data);
                     var fetchMenuResult = await _adminController.FetchMenuDetails(fetchMenuRequestDto);
                     return await SerializeJson(fetchMenuResult);
+                case "GetAllMenu":
+                    var result = await _adminController.GetAllMenu();
+                    return await SerializeJson(result);
+
                 default:
                     throw new ArgumentException("Invalid action name");
             }

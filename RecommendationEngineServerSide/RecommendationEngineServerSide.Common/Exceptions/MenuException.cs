@@ -21,5 +21,15 @@ namespace RecommendationEngineServerSide.Common.Exceptions
         {
             return new MenuException("Daily menu for today has already been added. You can't add menu twice");
         }
+
+        public static MenuException HandleNoMenuFound()
+        {
+            return new MenuException("There was no item found that has to discarded this month.");
+        }
+
+        public static MenuException HandleNoNotification()
+        {
+            return new MenuException("It hasn't been a month since the last deletion of items.");
+        }
     }
 }

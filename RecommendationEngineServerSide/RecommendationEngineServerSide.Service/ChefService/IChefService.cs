@@ -10,6 +10,7 @@ namespace RecommendationEngineServerSide.Service.ChefService
     public interface IChefService
     {
         Task<List<string>> GetNotification(string userName);
+        Task<MenuListDTO> GetMonthlyNotification(DateTime date);
         Task<MenuListDTO> GetMenuList(DateTime date);
         Task AddDailyMenu(NewDailyMenuDTO menuList);
 

@@ -33,6 +33,8 @@ namespace RecommendationEngineServerSide.DAL.Context
 
         public DbSet<UserNotification> UserNotification { get; set; }
 
+        public DbSet<Log> Logs { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

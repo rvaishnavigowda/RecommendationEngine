@@ -35,6 +35,38 @@ namespace RecommendationEngineServerSide.Service.ChefService
             return notification;
         }
 
+        public async Task<MenuListDTO> GetMonthlyNotification(DateTime date)
+        {
+            var getDailyMenuDetails = (await _unitOfWork.DailyMenu.GetAll()).First();
+            if(getDailyMenuDetails!=null)
+            {
+                double timeSpan = (date - getDailyMenuDetails.DailyMenuDate).TotalDays;
+                if(timeSpan ==30)
+                {
+                    MenuListDTO menuList = new MenuListDTO()
+                    {
+                        Menu = new List<ListMenuDTO>()
+                    };
+                    menuList.Menu = await _recommendationService.GetPoorRatedMenuList();
+                    if(menuList.Menu != null)
+                    {
+                        return menuList;
+                    }
+                    else
+                    {
+                        throw MenuException.HandleNoMenuFound();
+                    }
+                }
+                else
+                {
+                    throw MenuException.HandleNoNotification();
+                }
+            }
+            else
+            {
+                throw DailyMenuException.MenuNotPresentException();
+            }
+        }
         public async Task<MenuListDTO> GetMenuList(DateTime date)
         {
             var recommendedMenuItems = await _recommendationService.GetRecommendedMenuItems();

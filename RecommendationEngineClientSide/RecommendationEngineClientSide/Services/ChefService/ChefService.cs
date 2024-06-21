@@ -31,12 +31,25 @@ namespace RecommendationEngineClientSide.Services.ChefServices
             return notificationResponse;
         }
 
+        public async Task<MenuListDto> FetchMonthlyNotificationASync(DateTime date)
+        {
+            var getMenuListRequest = new
+            {
+                Controller = "ChefController",
+                Action = "HandleMontlyNotification",
+                Data = date
+            };
+            string requestJson = JsonConvert.SerializeObject(getMenuListRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            return JsonConvert.DeserializeObject<MenuListDto>(response);
+        }
+
         public async Task<MenuListDto> GetMenuListAsync(DateTime date)
         {
             var getMenuListRequest = new
             {
                 Controller = "ChefController",
-                Action = "HandleGetMenuList",
+                Action = "HandleMontlyNotification",
                 Data = date
             };
 

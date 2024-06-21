@@ -120,16 +120,18 @@ namespace RecommendationEngineServerSide.Controller
                     var requestObject = JsonSerializer.Deserialize<userDto>(data);
                     var notificationresult = await _chefController.HandleGetNotification(requestObject.UserName);
                     return await SerializeJson(notificationresult);
+                case "HandleMontlyNotification":
+                    var currentDate = JsonSerializer.Deserialize<DateTime> (data);
+                    var notificationResult = await _chefController.HandleMonthlyNotification(currentDate);
+                    return await SerializeJson(notificationResult);
                 case "HandleGetMenuList":
                     var date = await DeserializeJson<DateTime>(data);
                     var menuListResult = await _chefController.HandleGetMenuList(date);
                     return await SerializeJson(menuListResult);
-
                 case "HandleAddDailyMenu":
                     var newDailyMenuDTO = await DeserializeJson<NewDailyMenuDTO>(data);
                     var addDailyMenuResult = await _chefController.HandleAddDailyMenu(newDailyMenuDTO);
                     return await SerializeJson(addDailyMenuResult);
-
                 default:
                     throw new ArgumentException("Invalid action name");
             }

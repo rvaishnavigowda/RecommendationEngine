@@ -11,6 +11,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         private readonly IChefService _chefService;
         public bool ShouldLogout { get; private set; }
         private DateTime _loginDate;
+        private string _userName;
         public ChefConsoleHelper(IChefService chefService)
         {
             _chefService = chefService;
@@ -20,19 +21,22 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         public async Task HandleChefRoleAsync(string userName, DateTime loginDate)
         {
             _loginDate = loginDate;
-            var notificationsResponse = await _chefService.FetchNotificationsAsync(userName);
-            if (notificationsResponse.Status == "Success")
-            {
-                Console.WriteLine("Notifications:");
-                foreach (var notification in notificationsResponse.Notifications)
-                {
-                    Console.WriteLine($"- {notification}\n");
-                }
-            }
-            else
-            {
-                Console.WriteLine($" {notificationsResponse.Message}");
-            }
+            _userName=userName;
+            //var notificationsResponse = await _chefService.FetchNotificationsAsync(userName);
+            //if (notificationsResponse.Status == "Success")
+            //{
+            //    Console.WriteLine("Notifications:");
+            //    foreach (var notification in notificationsResponse.Notifications)
+            //    {
+            //        Console.WriteLine($"- {notification}\n");
+            //    }
+            //}
+            //else
+            //{
+            //    Console.WriteLine($" {notificationsResponse.Message}");
+            //}
+            await GetDailyNotification();
+            await GetMonthlyNotification();
             bool continueLoop = true;
             while (continueLoop)
             {
@@ -61,7 +65,39 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             }
         }
 
+        private async Task GetDailyNotification()
+        {
+            var notificationsResponse = await _chefService.FetchNotificationsAsync(_userName);
+            if (notificationsResponse.Status == "Success" && notificationsResponse.Notifications.Count>0)
+            {
+                Console.WriteLine("Notifications:");
+                foreach (var notification in notificationsResponse.Notifications)
+                {
+                    Console.WriteLine($"- {notification}\n");
+                }
+            }
+            else
+            {
+                Console.WriteLine($" {notificationsResponse.Message}");
+            }
+        }
 
+        private async Task GetMonthlyNotification()
+        {
+            var notificationsResponse = await _chefService.FetchNotificationsAsync(_userName);
+            if (notificationsResponse.Status == "Success" && notificationsResponse.Notifications.Count>0)
+            {
+                Console.WriteLine("Notifications:");
+                foreach (var notification in notificationsResponse.Notifications)
+                {
+                    Console.WriteLine($"- {notification}\n");
+                }
+            }
+            else
+            {
+                Console.WriteLine($" {notificationsResponse.Message}");
+            }
+        }
         private async Task GetMenuListAsync()
         {
             try

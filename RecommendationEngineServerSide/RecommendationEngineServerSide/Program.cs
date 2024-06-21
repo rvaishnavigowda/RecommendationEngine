@@ -20,6 +20,9 @@ using RecommendationEngineServerSide.Controller.ChefControllers;
 using RecommendationEngineServerSide.Controller.EmployeeControllers;
 using Microsoft.Extensions.Logging;
 using RecommendationEngineServerSide.Service.RecommendationService;
+using NLog.Extensions.Logging;
+using NLog;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace RecommendationEngineServerSide
 {
@@ -27,14 +30,30 @@ namespace RecommendationEngineServerSide
     {
         static async Task Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            var logger = LogManager.GetCurrentClassLogger();
+            try
+            {
+                // Initialize NLog
+                var config = new NLog.Config.XmlLoggingConfiguration("nlog.config");
+                LogManager.Configuration = config;
+                var host = CreateHostBuilder(args).Build();
 
             // Start the socket server
             var socketServer = host.Services.GetRequiredService<SocketServer>();
             _ = socketServer.StartAsync();
 
             await host.RunAsync();
-            
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Application start-up failed");
+                throw;
+            }
+            finally
+            {
+                LogManager.Shutdown();
+            }
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -59,14 +78,21 @@ namespace RecommendationEngineServerSide
                     services.AddScoped<IChefService, ChefService>();
                     services.AddScoped<INotificationService, NotificationService>();
                     services.AddScoped<AdminController>();
-                    services.AddLogging(config =>
+                    //services.AddLogging(config =>
+                    //{
+                    //    config.ClearProviders();
+                    //    config.AddConsole();
+                    //    config.SetMinimumLevel(LogLevel.Warning);
+                    //    config.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                    //});
+                    services.AddLogging(loggingBuilder =>
                     {
-                        config.ClearProviders();
-                        config.AddConsole();
-                        config.SetMinimumLevel(LogLevel.Warning);
-                        config.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                        loggingBuilder.ClearProviders();
+                        loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                        loggingBuilder.AddNLog();
                     });
                 });
+
     }
 }
 

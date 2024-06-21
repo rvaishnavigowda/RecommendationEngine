@@ -9,6 +9,7 @@ namespace RecommendationEngineServerSide.Service.RecommendationService
 {
     public interface IRecommendationService
     {
+        Task<List<ListMenuDTO>> GetPoorRatedMenuList();
         Task<List<MenuItemDTO>> GetRecommendedMenuItems();
     }
 }

@@ -40,6 +40,26 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
                 };
             }
         }
+
+        public async Task<MenuListDTO> HandleMonthlyNotification(DateTime date)
+        {
+            try
+            {
+                var notificationList=await _chefService.GetMonthlyNotification(date);
+                notificationList.Status = "Success";
+                notificationList.Message = "New notification: Below is the list of items that performed poor this month.";
+                return notificationList;
+            }
+            catch(Exception ex)
+            {
+                return new MenuListDTO()
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+            
+        }
         public async Task<MenuListDTO> HandleGetMenuList(DateTime date)
         {
             try

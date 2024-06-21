@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using RecommendationEngineServerSide.Common.DTO;
+using RecommendationEngineServerSide.Common.Exceptions;
 using RecommendationEngineServerSide.DAL.UnitfWork;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,6 +71,37 @@ namespace RecommendationEngineServerSide.Service.RecommendationService
                 .ToList();
 
             return recommendedMenuItems;
+        }
+
+        public async Task<List<ListMenuDTO>> GetPoorRatedMenuList()
+        {
+            var menuList = await GetRecommendedMenuItems();
+            List<ListMenuDTO> menuItems = new List<ListMenuDTO>();
+            foreach(var menu in menuList)
+            {
+                if(menu.OrderCount>0)
+                {
+                    if (menu.CombinedRating < 2)
+                    {
+                        ListMenuDTO listMenu = new ListMenuDTO()
+                        {
+                            MenuItemName = menu.MenuItemName,
+                            MenuItemType = menu.MenuItemType,
+                            Rating = menu.CombinedRating
+                        };
+                        menuItems.Add(listMenu);
+                    }
+                }
+                
+            }
+            if(menuList.Count > 0)
+            {
+                return menuItems;
+            }
+            else
+            {
+                throw MenuException.HandleNoMenuFound();
+            }
         }
 
         private double CalculateCombinedRating(double averageRating, double sentimentScore, int orderCount)

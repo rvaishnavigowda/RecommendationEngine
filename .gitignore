@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  
 # .gitignore for a .NET console application and .vs folder
  
@@ -95,3 +96,89 @@ Tools/
 Docs/
 Packages/
 Artifacts/
+=======
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore Rider project files
+.idea/
+
+# Ignore Visual Studio Code project files
+.vscode/
+
+# Ignore ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Ignore global NuGet packages folder
+packages/
+
+# Ignore Npm folders
+node_modules/
+
+# Ignore JetBrains Rider specific files
+.idea/
+.idea_modules/
+
+# Ignore Resharper specific files
+_ReSharper*/
+*.ReSharper
+*.DotSettings.user
+
+# Ignore Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Ignore MacOS specific files
+.DS_Store
+
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore log files
+*.log
+
+# Ignore Visual Studio Code workspace files
+.vscode/
+
+# Ignore compiled DLLs
+*.dll
+
+# Ignore compiled XML files
+*.xml
+
+# Ignore compiled executable files
+*.exe
+
+# Ignore compiled lib files
+*.lib
+
+# Ignore compiled database files
+*.mdb
+*.pdb
+
+# Ignore all cache files
+.cache
+
+# Ignore temporary generated files
+*.swp
+*.swo
+
+# Ignore markdown linting
+.markdownlint/
+.vs/
+>>>>>>> eb77581a6e97165e37214a029f13b0fe904e26ad

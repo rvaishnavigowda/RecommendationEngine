@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
+<<<<<<< HEAD
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide", "RecommendationEngineServerSide\RecommendationEngineServerSide.csproj", "{6FF85BD8-FC08-43EC-ADD7-889504CB385D}"
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide", "RecommendationEngineServerSide\RecommendationEngineServerSide.csproj", "{6FF85BD8-FC08-43EC-ADD7-889504CB385D}"
+>>>>>>> eb77581a6e97165e37214a029f13b0fe904e26ad
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "50Host", "50Host", "{EE3D7964-40EF-437F-BB96-A8475C060690}"
 EndProject
@@ -15,6 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "20DAL", "20DAL", "{3DEDEC2C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10Common", "10Common", "{E766C6FF-02EC-4436-8E5A-6C0E3375EB27}"
 EndProject
+<<<<<<< HEAD
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide.Controller", "RecommendationEngineServerSide.Controller\RecommendationEngineServerSide.Controller.csproj", "{9B5FA236-39E3-4068-9267-501C0B347C9E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide.Service", "RecommendationEngineServerSide.Service\RecommendationEngineServerSide.Service.csproj", "{C601994D-4BBE-43E7-9998-22C234B363EC}"
@@ -22,6 +27,15 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide.DAL", "RecommendationEngineServerSide.DAL\RecommendationEngineServerSide.DAL.csproj", "{A0E9881F-727C-4D56-83AB-EF265B79D7DE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide.Common", "RecommendationEngineServerSide.Common\RecommendationEngineServerSide.Common.csproj", "{4F56183C-58FB-452D-8685-7101B00D8490}"
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide.Controller", "RecommendationEngineServerSide.Controller\RecommendationEngineServerSide.Controller.csproj", "{9B5FA236-39E3-4068-9267-501C0B347C9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide.Service", "RecommendationEngineServerSide.Service\RecommendationEngineServerSide.Service.csproj", "{C601994D-4BBE-43E7-9998-22C234B363EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide.DAL", "RecommendationEngineServerSide.DAL\RecommendationEngineServerSide.DAL.csproj", "{A0E9881F-727C-4D56-83AB-EF265B79D7DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide.Common", "RecommendationEngineServerSide.Common\RecommendationEngineServerSide.Common.csproj", "{4F56183C-58FB-452D-8685-7101B00D8490}"
+>>>>>>> eb77581a6e97165e37214a029f13b0fe904e26ad
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

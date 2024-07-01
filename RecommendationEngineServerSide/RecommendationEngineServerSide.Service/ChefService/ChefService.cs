@@ -117,7 +117,7 @@ namespace RecommendationEngineServerSide.Service.ChefService
 
                             await _unitOfWork.DailyMenu.Add(menu);
                             await _unitOfWork.Save();
-                            await UpdateNotification(menuList.CurrentDate);
+                            await UpdateNotification(menuList.CurrentDate, ApplicationConstant.DailyMenuAddedNotification, (int)NotificationTypeEnum.NextDayMenuRecommendation);
                         }
                         else
                         {
@@ -144,11 +144,30 @@ namespace RecommendationEngineServerSide.Service.ChefService
 
             }
         }
-        private async Task UpdateNotification(DateTime date)
+        public async Task DiscardMenuItem(string menuItem)
         {
-            int notificationTypeId = (int)NotificationTypeEnum.NextDayMenuRecommendation;
-            await _notificationService.AddNotification(ApplicationConstant.DailyMenuAddedNotification, notificationTypeId, date);
+            var isMenuItemPresent = (await _unitOfWork.Menu.Find(a => a.MenuName == menuItem)).FirstOrDefault();
+            if (isMenuItemPresent != null && isMenuItemPresent.MenuStatus==1)
+            {
+                isMenuItemPresent.MenuStatus = 3;
+                await _unitOfWork.Menu.Update(isMenuItemPresent);
+                await _unitOfWork.Save();
+            }
+            else
+            {
+                throw AdminException.HandleMenuItemNotFound();
+            }
+        }
+        public async Task ImproviseMenuItem(UpgradeMenuDto menuItem)
+        {
+            string notificationMessage = ApplicationConstant.ImproviseMenuItemNotification +" : "+ menuItem.MenuName;
+            int notificationType = (int)NotificationTypeEnum.ImproveMenuItem;
+            await UpdateNotification(menuItem.CurrentDate, notificationMessage, notificationType);
         }
 
+        private async Task UpdateNotification(DateTime date, string notifiction, int notificationType)
+        {
+            await _notificationService.AddNotification(notifiction, notificationType, date);
+        }
     }
 }

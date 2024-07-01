@@ -1,4 +1,6 @@
-﻿namespace RecommendationEngineClientSide.DTO
+﻿using RecommendationEngineClientSide.ChefDTO;
+
+namespace RecommendationEngineClientSide.DTO
 {
     public class LoginRequestDto:SocketResponseDTO
     {

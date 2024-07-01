@@ -10,7 +10,8 @@ namespace RecommendationEngineServerSide.Common.Enum
     {
         NewMenuItemAdded = 1,
         NextDayMenuRecommendation = 2,
-        AvailabilityStatusOfMenuItems = 3
+        AvailabilityStatusOfMenuItems = 3,
+        ImproveMenuItem = 4
     }
 
     public enum UserType
@@ -18,5 +19,12 @@ namespace RecommendationEngineServerSide.Common.Enum
         Employee=1,
         Chef,
         Admin
+    }
+
+    public enum MenuStatus
+    {
+        Active=1,
+        Deletd=2,
+        DIscarded=3,
     }
 }

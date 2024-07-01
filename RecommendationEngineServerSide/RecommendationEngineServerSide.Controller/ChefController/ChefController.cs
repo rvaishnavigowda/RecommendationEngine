@@ -4,6 +4,7 @@ using AutoMapper;
 using RecommendationEngineServerSide.Common.DTO;
 using RecommendationEngineServerSide.Common.Exceptions;
 using RecommendationEngineServerSide.Service.ChefService;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RecommendationEngineServerSide.Controller.ChefControllers
 {
@@ -57,8 +58,7 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
                     Status = "Failure",
                     Message = ex.Message
                 };
-            }
-            
+            }       
         }
         public async Task<MenuListDTO> HandleGetMenuList(DateTime date)
         {
@@ -114,6 +114,46 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
             catch (Exception ex)
             {
                 return new SocketResponseDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<SocketResponseDTO> HandleDiscardFoodItem(string menuItem)
+        {
+            try
+            {
+                await _chefService.DiscardMenuItem(menuItem);
+                var notificationList = new SocketResponseDTO();
+                notificationList.Status = "Success";
+                notificationList.Message = "The menu item has been successfully discarded";
+                return notificationList;
+            }
+            catch (Exception ex)
+            {
+                return new MenuListDTO()
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<SocketResponseDTO> HandleImproveFoodItem(UpgradeMenuDto menuItem)
+        {
+            try
+            {
+                await _chefService.ImproviseMenuItem(menuItem);
+                var notificationList = new SocketResponseDTO();
+                notificationList.Status = "Success";
+                notificationList.Message = "The menu item has been successfully discarded";
+                return notificationList;
+            }
+            catch (Exception ex)
+            {
+                return new MenuListDTO()
                 {
                     Status = "Failure",
                     Message = ex.Message

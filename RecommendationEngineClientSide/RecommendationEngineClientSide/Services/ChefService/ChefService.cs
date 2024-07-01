@@ -49,7 +49,7 @@ namespace RecommendationEngineClientSide.Services.ChefServices
             var getMenuListRequest = new
             {
                 Controller = "ChefController",
-                Action = "HandleMontlyNotification",
+                Action = "HandleGetMenuList",
                 Data = date
             };
 
@@ -68,6 +68,34 @@ namespace RecommendationEngineClientSide.Services.ChefServices
             };
 
             string requestJson = JsonConvert.SerializeObject(addDailyMenuRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            return JsonConvert.DeserializeObject<SocketResponseDTO>(response);
+        }
+
+        public async Task<SocketResponseDTO> RemoveFoodItemAsync(string itemName)
+        {
+            var removeFoodItemRequest = new
+            {
+                Controller = "ChefController",
+                Action = "HandleDiscardFoodItem",
+                Data = new { MenuItemName = itemName }
+            };
+
+            string requestJson = JsonConvert.SerializeObject(removeFoodItemRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            return JsonConvert.DeserializeObject<SocketResponseDTO>(response);
+        }
+
+        public async Task<SocketResponseDTO> UpgradeFoodItemAsync(UpgradeMenuDto menuDto)
+        {
+            var upgradeFoodItemRequest = new
+            {
+                Controller = "ChefController",
+                Action = "HandleImproveFoodItem",
+                Data =menuDto
+            };
+
+            string requestJson = JsonConvert.SerializeObject(upgradeFoodItemRequest);
             var response = await _requestService.SendRequestAsync(requestJson);
             return JsonConvert.DeserializeObject<SocketResponseDTO>(response);
         }

@@ -45,4 +45,10 @@ namespace RecommendationEngineClientSide.ChefDTO
     {
         public string MenuItemName { get; set; }
     }
+
+    public class UpgradeMenuDto
+    {
+        public DateTime CurrentDate { get; set;}
+        public string MenuName { get; set; }
+    }
 }

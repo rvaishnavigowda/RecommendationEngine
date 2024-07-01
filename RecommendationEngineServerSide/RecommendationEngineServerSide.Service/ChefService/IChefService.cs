@@ -14,5 +14,8 @@ namespace RecommendationEngineServerSide.Service.ChefService
         Task<MenuListDTO> GetMenuList(DateTime date);
         Task AddDailyMenu(NewDailyMenuDTO menuList);
 
+        Task DiscardMenuItem(string menuItem);
+        Task ImproviseMenuItem(UpgradeMenuDto menuItem);
+
     }
 }

@@ -52,7 +52,7 @@ namespace RecommendationEngineServerSide.Service.RecommendationService
                 .ToDictionary(x => x.MenuId, x => x.OrderCount);
 
             var recommendedMenuItems = menus
-                .Where(m => !m.ISDeleted)
+                .Where(m => m.MenuStatus==1)
                 .Select(m => new MenuItemDTO
                 {
                     MenuItemId = m.MenuId,

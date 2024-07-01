@@ -132,6 +132,14 @@ namespace RecommendationEngineServerSide.Controller
                     var newDailyMenuDTO = await DeserializeJson<NewDailyMenuDTO>(data);
                     var addDailyMenuResult = await _chefController.HandleAddDailyMenu(newDailyMenuDTO);
                     return await SerializeJson(addDailyMenuResult);
+                case "HandleDiscardFoodItem":
+                    var itemName= await DeserializeJson<string>(data);
+                    var result=await _chefController.HandleDiscardFoodItem(itemName);
+                    return await SerializeJson(result);
+                case "HandleImproveFoodItem":
+                    var itemDetails=await DeserializeJson<UpgradeMenuDto>(data);
+                    var improveItemresult = await _chefController.HandleImproveFoodItem(itemDetails);
+                    return await SerializeJson(improveItemresult);
                 default:
                     throw new ArgumentException("Invalid action name");
             }

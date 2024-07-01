@@ -15,4 +15,10 @@ namespace RecommendationEngineServerSide.Common.DTO
         public DateTime FeedbackDate { get; set; }
 
     }
+
+    public class UpgradeMenuDto
+    {
+        public DateTime CurrentDate { get; set; }
+        public string MenuName { get; set; }
+    }
 }

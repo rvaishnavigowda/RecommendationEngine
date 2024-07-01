@@ -50,13 +50,13 @@ namespace RecommendationEngineServerSide.Service.AdminService
                         await UpdateNotification(menu.MenuName, menuDTO.MenuType,menuDTO.dateCreated);
 
                     }
-                    else if(isMenuItemPresent!=null && isMenuItemPresent.ISDeleted)
+                    else if(isMenuItemPresent!=null && isMenuItemPresent.MenuStatus==2)
                     {
-                        isMenuItemPresent.ISDeleted = false;
+                        isMenuItemPresent.MenuStatus = 1;
                         await _unitOfWork.Menu.Update(isMenuItemPresent);
                         await _unitOfWork.Save();
                     }
-                    else if(isMenuItemPresent!=null && isMenuItemPresent.ISDeleted && isMenuItemPresent.MenuType.MenuTypeName!=menuDTO.MenuType)
+                    else if(isMenuItemPresent!=null && isMenuItemPresent.MenuStatus == 2 && isMenuItemPresent.MenuType.MenuTypeName!=menuDTO.MenuType)
                     {
                         Menu menu = new Menu
                         {
@@ -90,7 +90,7 @@ namespace RecommendationEngineServerSide.Service.AdminService
         //}
         public async Task<FetchMenuDTO> GetMenuDetailsByName(string menuName)
         {
-            var isMenuNamePresent=(await _unitOfWork.Menu.GetAll()).Where(a=>a.MenuName.ToLower()==menuName && a.ISDeleted==false).ToList() ;
+            var isMenuNamePresent=(await _unitOfWork.Menu.GetAll()).Where(a=>a.MenuName.ToLower()==menuName && a.MenuStatus==1).ToList() ;
             if(isMenuNamePresent.Count!=0)
             {
                 FetchMenuDTO menuDTO = new FetchMenuDTO()
@@ -127,7 +127,7 @@ namespace RecommendationEngineServerSide.Service.AdminService
                     await _unitOfWork.Menu.Update(isMenuItemPresent);
                     await _unitOfWork.Save();
                 }
-                else if(isMenuItemPresent.ISDeleted)
+                else if(isMenuItemPresent.MenuStatus==2)
                 {
                     throw AdminException.HandleMenuItemDeleted();
                 }
@@ -145,7 +145,7 @@ namespace RecommendationEngineServerSide.Service.AdminService
 
         public async Task<MenuListDTO> GetAllMenu()
         {
-            var menuList=(await _unitOfWork.Menu.GetAll()).Where(a=>a.ISDeleted==false).ToList();
+            var menuList=(await _unitOfWork.Menu.GetAll()).Where(a=>a.MenuStatus==1).ToList();
             if(menuList!=null)
             {
                 var menu = new MenuListDTO()
@@ -176,9 +176,9 @@ namespace RecommendationEngineServerSide.Service.AdminService
                 var isMenuItemPresent = await CheckMenuItem(deleteMenuDTO.MenuName);
                 if (isMenuItemPresent != null)
                 {
-                    if(!isMenuItemPresent.ISDeleted)
+                    if(isMenuItemPresent.MenuStatus==1)
                     {
-                        isMenuItemPresent.ISDeleted = true;
+                        isMenuItemPresent.MenuStatus = 2;
                         await _unitOfWork.Menu.Update(isMenuItemPresent);
                         await _unitOfWork.Save();
                     }
@@ -227,7 +227,7 @@ namespace RecommendationEngineServerSide.Service.AdminService
         private async Task UpdateNotification(string menuName, string menuType, DateTime date)
         {
             int notificationTypeId = (int)NotificationTypeEnum.NewMenuItemAdded;
-            string notification = ApplicationConstant.NewMenuItemNotification + ": " + menuName;
+            string notification = ApplicationConstant.NewMenuItemNotification + " : " + menuName;
             await _notificationService.AddNotification(notification, notificationTypeId, date);
         }
     }

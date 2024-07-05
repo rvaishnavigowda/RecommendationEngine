@@ -33,6 +33,79 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
             notification = await _notificationService.GetNotification(userDetails.UserId);
             return notification;
         }
+        
+        public async Task<NotificationDTO> UpgradeMenuFeedback(string userName)
+        {
+            var feedback = await _notificationService.GetMenuUpgradeFeedback(userName);
+            if (feedback != null)
+            {
+                List<string> feedbackList = new List<string>();
+                
+                var feedbackNotification = (await _unitOfWork.MenuFeedbackQuestion.GetAll()).ToList();
+                foreach(var item in feedbackList)
+                {
+                    feedbackList.Add(item);
+                }
+                return new NotificationDTO
+                {
+                    Status = "Success",
+                    Message = feedback,
+                    Notifications = feedbackList
+                };
+            }
+            else
+            {
+                throw EmployeeException.HandleNoFeedback();
+            }
+        }
+
+        public async Task<EmployeeUpdateDTO> GetUserPreference(string userName)
+        {
+            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName == userName);
+            if (isUserPresent != null)
+            {
+                EmployeeUpdateDTO employeeProfileDTO = new EmployeeUpdateDTO()
+                {
+                    ProfileQuestions = new List<ProfileQuestionDTO>()
+                };
+
+                var profileQuestions = (await _unitOfWork.ProfileQuestion.GetAll()).ToList();
+                if (profileQuestions.Count > 0)
+                {
+                    foreach (var item in profileQuestions)
+                    {
+                        var profileQuestion = new ProfileQuestionDTO
+                        {
+                            Question = item.Question,
+                            ProfileAnswers = new List<string>()
+                        };
+
+                        var profiles = (await _unitOfWork.ProfileAnswer.GetAll()).Where(a => a.ProfileQuestionId == item.PQId).ToList();
+                        if (profiles != null)
+                        {
+                            foreach (var answer in profiles)
+                            {
+                                profileQuestion.ProfileAnswers.Add(answer.ProfileAnswerSolution);
+                            }
+                        }
+
+                        employeeProfileDTO.ProfileQuestions.Add(profileQuestion);
+                    }
+                }
+
+                return new EmployeeUpdateDTO
+                {
+                    Status = "Success",
+                    ProfileQuestions = employeeProfileDTO.ProfileQuestions,
+                    Message = "Please update your preferences."
+                };
+            }
+            else
+            {
+                throw LoginException.NoUserPresent();
+            }
+        }
+
         public async Task<DailyMenuDTO> GetDailyMenuList(DailyMenuDTO dailyMenu)
         {
             var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == dailyMenu.UserName);
@@ -103,6 +176,7 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
             
         }
         
+
         public async Task<OrderDetailDTO> PlaceOrder(OrderDetailDTO orderDetailDTO)
         {
             var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == orderDetailDTO.UserName.ToLower());
@@ -191,7 +265,6 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                 Items = orderDetailDTO.Items
             };
         }
-
 
         public async Task GiveFeedback(FeedbackDTO feedbackDTO)
         {

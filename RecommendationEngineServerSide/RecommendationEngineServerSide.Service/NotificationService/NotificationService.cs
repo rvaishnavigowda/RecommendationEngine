@@ -70,15 +70,18 @@ namespace RecommendationEngineServerSide.Service.NotificationService
                             }
                             else if(isUserPrsent.UserType.UserTypeName.ToLower() == "employee")
                             {
-                                notificationList.Add(listItem.NotificationMessage);
-                                
-                                UserNotification userNotification = new UserNotification()
+                                if(listItem.NotificationType.NotificationTypeId!=3)
                                 {
-                                    UserId = userId,
-                                    NotificationId = listItem.NotificationId
-                                };
-                                await _unitOfWork.UserNotification.Add(userNotification);
-                                await _unitOfWork.Save();
+                                    notificationList.Add(listItem.NotificationMessage);
+
+                                    UserNotification userNotification = new UserNotification()
+                                    {
+                                        UserId = userId,
+                                        NotificationId = listItem.NotificationId
+                                    };
+                                    await _unitOfWork.UserNotification.Add(userNotification);
+                                    await _unitOfWork.Save();
+                                }
                             }
                         }
                         return notificationList;
@@ -91,6 +94,46 @@ namespace RecommendationEngineServerSide.Service.NotificationService
                 else
                 {
                     throw CommonException.HandleNullNotification();
+                }
+            }
+            else
+            {
+                throw LoginException.NoUserPresent();
+            }
+        }
+
+        public async Task<string> GetMenuUpgradeFeedback(string userName)
+        {
+            var isUserPresent=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName==userName);
+            if(isUserPresent!=null)
+            {
+                var lastNotification = (await _unitOfWork.UserNotification.GetAll())
+                .Where(un => un.User.UserName == userName)
+                .Join(
+                    await _unitOfWork.Notification.GetAll(),
+                    un => un.NotificationId,
+                    n => n.NotificationId,
+                    (un, n) => new { un, n }
+                    )
+                .Where(x => x.n.NotificationTypeId == 3)
+                .OrderByDescending(x => x.n.NotificationDate)
+                .Select(x => x.n)
+                .FirstOrDefault();
+
+                if (lastNotification != null)
+                {
+                    UserNotification userNotification = new UserNotification()
+                    {
+                        UserId = isUserPresent.UserId,
+                        NotificationId = lastNotification.NotificationId
+                    };
+                    await _unitOfWork.UserNotification.Add(userNotification);
+                    await _unitOfWork.Save();
+                    return lastNotification.NotificationMessage;
+                }
+                else
+                {
+                    return null;
                 }
             }
             else

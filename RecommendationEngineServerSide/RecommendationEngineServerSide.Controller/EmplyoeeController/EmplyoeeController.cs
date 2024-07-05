@@ -41,6 +41,43 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
             }
         }
 
+        public async Task<NotificationDTO> HandleGetMonthlyNotification(string userName)
+        {
+            try
+            {
+                var notifications = await _employeeService.UpgradeMenuFeedback(userName);
+
+                return notifications;
+            }
+            catch (Exception ex)
+            {
+                return new NotificationDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<EmployeeUpdateDTO> HandleGetUserProfile(string userName)
+        {
+            try
+            {
+                var notifications = await _employeeService.GetUserPreference(userName);
+
+                return notifications;
+            }
+            catch (Exception ex)
+            {
+                return new EmployeeUpdateDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
+
+
         public async Task<DailyMenuDTO> HandleGetDailyMenu(string userName, DateTime currentDate)
         {
             try

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide", "RecommendationEngineServerSide\RecommendationEngineServerSide.csproj", "{6FF85BD8-FC08-43EC-ADD7-889504CB385D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide", "RecommendationEngineServerSide\RecommendationEngineServerSide.csproj", "{6FF85BD8-FC08-43EC-ADD7-889504CB385D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "50Host", "50Host", "{EE3D7964-40EF-437F-BB96-A8475C060690}"
 EndProject
@@ -15,13 +15,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "20DAL", "20DAL", "{3DEDEC2C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "10Common", "10Common", "{E766C6FF-02EC-4436-8E5A-6C0E3375EB27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide.Controller", "RecommendationEngineServerSide.Controller\RecommendationEngineServerSide.Controller.csproj", "{9B5FA236-39E3-4068-9267-501C0B347C9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide.Controller", "RecommendationEngineServerSide.Controller\RecommendationEngineServerSide.Controller.csproj", "{9B5FA236-39E3-4068-9267-501C0B347C9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide.Service", "RecommendationEngineServerSide.Service\RecommendationEngineServerSide.Service.csproj", "{C601994D-4BBE-43E7-9998-22C234B363EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide.Service", "RecommendationEngineServerSide.Service\RecommendationEngineServerSide.Service.csproj", "{C601994D-4BBE-43E7-9998-22C234B363EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide.DAL", "RecommendationEngineServerSide.DAL\RecommendationEngineServerSide.DAL.csproj", "{A0E9881F-727C-4D56-83AB-EF265B79D7DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide.DAL", "RecommendationEngineServerSide.DAL\RecommendationEngineServerSide.DAL.csproj", "{A0E9881F-727C-4D56-83AB-EF265B79D7DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide.Common", "RecommendationEngineServerSide.Common\RecommendationEngineServerSide.Common.csproj", "{4F56183C-58FB-452D-8685-7101B00D8490}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecommendationEngineServerSide.Common", "RecommendationEngineServerSide.Common\RecommendationEngineServerSide.Common.csproj", "{4F56183C-58FB-452D-8685-7101B00D8490}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "60UnitTest", "60UnitTest", "{BB83055D-13FC-48D4-B27B-43481DE4ECBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationEngineServerSide.UnitTest", "RecommendationEngineServerSide.UnitTest\RecommendationEngineServerSide.UnitTest.csproj", "{B2CFF3CB-9F05-40F7-B93F-7D6550F20262}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +53,10 @@ Global
 		{4F56183C-58FB-452D-8685-7101B00D8490}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F56183C-58FB-452D-8685-7101B00D8490}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F56183C-58FB-452D-8685-7101B00D8490}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2CFF3CB-9F05-40F7-B93F-7D6550F20262}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2CFF3CB-9F05-40F7-B93F-7D6550F20262}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2CFF3CB-9F05-40F7-B93F-7D6550F20262}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2CFF3CB-9F05-40F7-B93F-7D6550F20262}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +67,7 @@ Global
 		{C601994D-4BBE-43E7-9998-22C234B363EC} = {88C6BA52-1F85-41D2-8D55-CDEA2EFB343F}
 		{A0E9881F-727C-4D56-83AB-EF265B79D7DE} = {3DEDEC2C-DC7F-4456-87F2-655AA8257701}
 		{4F56183C-58FB-452D-8685-7101B00D8490} = {E766C6FF-02EC-4436-8E5A-6C0E3375EB27}
+		{B2CFF3CB-9F05-40F7-B93F-7D6550F20262} = {BB83055D-13FC-48D4-B27B-43481DE4ECBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {14E1C13F-67BF-405D-8C45-06D7CF454BA9}

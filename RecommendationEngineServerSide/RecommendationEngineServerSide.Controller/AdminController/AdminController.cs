@@ -30,7 +30,7 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 await _adminService.AddMenu(menuDTO);
                 ResponseMenuDTO responseMenuDTO = new ResponseMenuDTO()
                 {
-                    Status = "Sucsess",
+                    Status = "Success",
                     Message = "The menu has been successfully added."
                 };
                 return responseMenuDTO;
@@ -66,7 +66,7 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
             try
             {
                 var menuDetails = await _adminService.GetMenuDetailsByName(fetchMenuRequestDto.MenuName);
-                menuDetails.Status = "success";
+                menuDetails.Status = "Success";
                 menuDetails.Message="The menu items by the name"+fetchMenuRequestDto.MenuName;
                 return menuDetails;
             }

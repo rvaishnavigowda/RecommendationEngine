@@ -107,6 +107,14 @@ namespace RecommendationEngineServerSide.Controller
                     var feedbackDTO = await DeserializeJson<FeedbackDTO>(data);
                     var giveFeedbackResult = await _employeeController.HandleGiveFeedback(feedbackDTO);
                     return await SerializeJson(giveFeedbackResult);
+                case "HandleMonthlyFeedback":
+                    var feedbacks=await DeserializeJson<userDto > (data);
+                    var monthlyFeedbacks = await _employeeController.HandleGetMonthlyNotification(feedbacks.UserName);
+                    return await SerializeJson(monthlyFeedbacks);
+                case "HandleGetUserProfile":
+                    var userDetail=await DeserializeJson<userDto> (data);
+                    var userProfile=await _employeeController.HandleGetUserProfile(userDetail.UserName);
+                    return await SerializeJson(userProfile);
                 default:
                     throw new ArgumentException("Invalid action name");
             }

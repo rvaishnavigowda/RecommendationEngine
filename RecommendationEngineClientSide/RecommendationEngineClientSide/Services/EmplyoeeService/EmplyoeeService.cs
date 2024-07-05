@@ -28,6 +28,21 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
             var notificationResponse = JsonConvert.DeserializeObject<NotificationDTO>(response);
             return notificationResponse;
         }
+
+        public async Task<NotificationDTO> FetchFeedbackQuestion(string userName)
+        {
+            var fetchFeedbackQuestion = new
+            {
+                Controller = "EmployeeController",
+                Action = "HandleMonthlyFeedback",
+                Data = new { UserName = userName }
+
+            };
+            string requestJson = JsonConvert.SerializeObject(fetchFeedbackQuestion);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var notificationResponse = JsonConvert.DeserializeObject<NotificationDTO>(response);
+            return notificationResponse;
+        }
         public async Task<DailyMenuResponseDto> GetDailyMenuAsync(DailyMenuRequestDto dailyMenuRequestDto)
         {
             var getDailyMenuRequest = new
@@ -68,6 +83,36 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
             };
 
             string requestJson = JsonConvert.SerializeObject(giveFeedbackRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var socketResponse = JsonConvert.DeserializeObject<SocketResponseDTO>(response);
+            return socketResponse;
+        }
+
+        public async Task<EmployeeUpdateDTO> FetchUserProfileQuestion(string userName)
+        {
+            var fetchUserProfileRequest = new
+            {
+                Controller = "EmployeeController",
+                Action = "HandleGetUserProfile",
+                Data = new { UserName = userName }
+            };
+
+            string requestJson = JsonConvert.SerializeObject(fetchUserProfileRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var userProfileResponse = JsonConvert.DeserializeObject<EmployeeUpdateDTO>(response);
+            return userProfileResponse;
+        }
+
+        public async Task<SocketResponseDTO> SubmitUserProfileAnswers(UserProfileDetailDTO userProfileDetail)
+        {
+            var submitAnswersRequest = new
+            {
+                Controller = "EmployeeController",
+                Action = "HandleSubmitUserProfileAnswers",
+                Data = userProfileDetail
+            };
+
+            string requestJson = JsonConvert.SerializeObject(submitAnswersRequest);
             var response = await _requestService.SendRequestAsync(requestJson);
             var socketResponse = JsonConvert.DeserializeObject<SocketResponseDTO>(response);
             return socketResponse;

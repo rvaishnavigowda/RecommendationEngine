@@ -13,7 +13,8 @@ namespace RecommendationEngineServerSide.DAL.Repository.UserNotificationRepo
     public class UserNotificationRepository :GenericRepository<UserNotification>, IUserNotificationRepository
     {
         public UserNotificationRepository(DBContext context) : base(context)
-        { }
+        {
+        }
 
     }
 }

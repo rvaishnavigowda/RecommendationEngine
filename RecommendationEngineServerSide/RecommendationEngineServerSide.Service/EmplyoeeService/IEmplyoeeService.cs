@@ -11,6 +11,8 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
     public interface IEmplyoeeService
     {
         Task<List<string>> GetNotification(string userName);
+        Task<NotificationDTO> UpgradeMenuFeedback(string userName);
+        Task<EmployeeUpdateDTO> GetUserPreference(string userName);
         Task<DailyMenuDTO> GetDailyMenuList(DailyMenuDTO dailyMenu);
         Task<OrderDetailDTO> PlaceOrder(OrderDetailDTO orderDetailDTO);
         Task GiveFeedback(FeedbackDTO feedbackDTO);

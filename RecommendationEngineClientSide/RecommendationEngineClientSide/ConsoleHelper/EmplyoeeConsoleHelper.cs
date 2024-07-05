@@ -1,4 +1,5 @@
-﻿using RecommendationEngineClientSide.DTO;
+﻿using Newtonsoft.Json;
+using RecommendationEngineClientSide.DTO;
 using RecommendationEngineClientSide.Services.EmployeeServices;
 using System;
 using System.Threading.Tasks;
@@ -22,19 +23,8 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             _username = userName.ToLower();
             _date = date;
-            var notificationsResponse = await _employeeService.FetchNotificationsAsync(userName);
-            if (notificationsResponse.Status == "Success")
-            {
-                Console.WriteLine("Notifications:");
-                foreach (var notification in notificationsResponse.Notifications)
-                {
-                    Console.WriteLine($"- {notification}\n");
-                }
-            }
-            else
-            {
-                Console.WriteLine($" {notificationsResponse.Message}");
-            }
+            await HandleDailyNotification();
+            await HandleImproveMenuItem();
             bool continueLoop = true;
             while (continueLoop)
             {
@@ -42,7 +32,8 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 Console.WriteLine("1. Get Daily Menu");
                 Console.WriteLine("2. Place Order");
                 Console.WriteLine("3. Give Feedback");
-                Console.WriteLine("4. Logout");
+                Console.WriteLine("4. Profile Update");
+                Console.WriteLine("5. Logout");
                 string choice = Console.ReadLine();
 
                 switch (choice)
@@ -57,6 +48,9 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                         await GiveFeedbackAsync();
                         break;
                     case "4":
+                        await UserProfileUpdateAsync();
+                        break;
+                    case "5":
                         continueLoop = false;
                         Console.WriteLine("Logging out...");
                         break;
@@ -67,6 +61,45 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             }
         }
 
+        private async Task HandleDailyNotification()
+        {
+            var notificationsResponse = await _employeeService.FetchNotificationsAsync(_username);
+            if (notificationsResponse.Status == "Success")
+            {
+                Console.WriteLine("Notifications:");
+                foreach (var notification in notificationsResponse.Notifications)
+                {
+                    Console.WriteLine($"- {notification}\n");
+                }
+            }
+            else
+            {
+                Console.WriteLine($" {notificationsResponse.Message}");
+            }
+        }
+
+        private async Task HandleImproveMenuItem()
+        {
+            var notification=await _employeeService.FetchFeedbackQuestion(_username);
+            if(notification.Status == "Success")
+            {
+                Console.WriteLine(notification.Message);
+                MenuUpgradeListDTO menuUpgradeList = new MenuUpgradeListDTO()
+                {
+                    menuFeedback = new List<MenuUpgradeDTO>()
+                };
+                int numberCount = 1;
+                foreach(var item in notification.Notifications)
+                {
+                    Console.WriteLine(item, "\n");
+                    MenuUpgradeDTO userAnswer = new MenuUpgradeDTO();
+                    userAnswer.userAnswer = Console.ReadLine();
+                    userAnswer.questionNumber = numberCount;
+                    numberCount++;
+                   
+                }
+            }
+        }
         private async Task GetDailyMenuAsync()
         {
             try
@@ -216,6 +249,60 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 var response = await _employeeService.GiveFeedbackAsync(feedbackDto);
 
                 Console.WriteLine(response.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+        private async Task UserProfileUpdateAsync()
+        {
+            try
+            {
+                var userProfileDetails = await _employeeService.FetchUserProfileQuestion(_username);
+                if (userProfileDetails.Status == "Success")
+                {
+                    var profileData = userProfileDetails.ProfileQuestions;
+                    var questionAnswerPairs = new List<string>();
+
+                    foreach (var question in profileData)
+                    {
+                        Console.WriteLine($"Question: {question.Question}");
+                        for (int i = 0; i < question.ProfileAnswers.Count; i++)
+                        {
+                            Console.WriteLine($"{i + 1}. {question.ProfileAnswers[i]}");
+                        }
+                        int selectedOption;
+                        while (true)
+                        {
+                            Console.Write("Select your answer by entering the corresponding number: ");
+                            string input = Console.ReadLine();
+                            if (int.TryParse(input, out selectedOption) && selectedOption > 0 && selectedOption <= question.ProfileAnswers.Count)
+                            {
+                                break; 
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid input. Please enter a valid number corresponding to an answer option.");
+                            }
+                        }
+                        string selectedAnswer = question.ProfileAnswers[selectedOption - 1];
+
+                        questionAnswerPairs.Add(selectedAnswer);
+                    }
+                    UserProfileDetailDTO userProfileDetail = new UserProfileDetailDTO()
+                    {
+                        userName = _username,
+                        userResponse = questionAnswerPairs
+                    };
+                    var submitResponse = await _employeeService.SubmitUserProfileAnswers(userProfileDetail);
+                    Console.WriteLine(submitResponse.Message);
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to fetch user profile questions: {userProfileDetails.Message}");
+                }
             }
             catch (Exception ex)
             {

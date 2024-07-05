@@ -10,5 +10,6 @@ namespace RecommendationEngineServerSide.Service.NotificationService
     {
         Task AddNotification(string notificationMessage, int notificationType, DateTime notificationDate);
         Task<List<string>> GetNotification(int userId);
+        Task<string> GetMenuUpgradeFeedback(string userId);
     }
 }

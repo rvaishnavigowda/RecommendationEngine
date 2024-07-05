@@ -42,4 +42,17 @@
         public string Comment { get; set; }
         public DateTime FeedbackDate { get; set; }
     }
+
+    public class MenuUpgradeDTO
+    {
+        public int questionNumber { get; set; }
+        public string userAnswer { get; set; }
+    }
+
+    public class MenuUpgradeListDTO
+    {
+        public List<MenuUpgradeDTO> menuFeedback { get; set; }
+    }
+
+
 }

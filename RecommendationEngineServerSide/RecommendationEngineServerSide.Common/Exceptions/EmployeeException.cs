@@ -22,5 +22,10 @@ namespace RecommendationEngineServerSide.Common.Exceptions
         {
             return new EmployeeException("The feedback to the menu item is already given.");
         }
+
+        public static EmployeeException HandleNoFeedback() 
+        {
+            return new EmployeeException("There are no monthly notifications.");
+        }
     }
 }

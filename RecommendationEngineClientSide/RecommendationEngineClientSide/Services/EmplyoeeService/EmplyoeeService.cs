@@ -43,6 +43,20 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
             var notificationResponse = JsonConvert.DeserializeObject<NotificationDTO>(response);
             return notificationResponse;
         }
+
+        public async Task<SocketResponseDTO> UpdateMenuUpgradeFeedback(UserMenuUpgradeListDTO userMenuUpgradeList)
+        {
+            var updateUserManeuFeedback = new
+            {
+                Controller = "EmployeeController",
+                Action = "HandleMenuUpgradeFeedback",
+                Data = userMenuUpgradeList
+            };
+            string requestJson = JsonConvert.SerializeObject(updateUserManeuFeedback);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var notificationResponse = JsonConvert.DeserializeObject<SocketResponseDTO>(response);
+            return notificationResponse;
+        }
         public async Task<DailyMenuResponseDto> GetDailyMenuAsync(DailyMenuRequestDto dailyMenuRequestDto)
         {
             var getDailyMenuRequest = new
@@ -51,7 +65,6 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
                 Action = "HandleGetDailyMenu",
                 Data = dailyMenuRequestDto
             };
-
             string requestJson = JsonConvert.SerializeObject(getDailyMenuRequest);
             var response = await _requestService.SendRequestAsync(requestJson);
             var dailyMenuResponse = JsonConvert.DeserializeObject<DailyMenuResponseDto>(response);
@@ -108,7 +121,7 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
             var submitAnswersRequest = new
             {
                 Controller = "EmployeeController",
-                Action = "HandleSubmitUserProfileAnswers",
+                Action = "HandleUpdateUserProfile",
                 Data = userProfileDetail
             };
 

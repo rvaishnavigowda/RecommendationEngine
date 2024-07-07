@@ -7,6 +7,7 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
     {
         Task<NotificationDTO> FetchNotificationsAsync(string userName);
         Task<NotificationDTO> FetchFeedbackQuestion(string userName);
+        Task<SocketResponseDTO> UpdateMenuUpgradeFeedback(UserMenuUpgradeListDTO userMenuUpgradeList);
         Task<EmployeeUpdateDTO> FetchUserProfileQuestion(string userName);
         Task<SocketResponseDTO> SubmitUserProfileAnswers(UserProfileDetailDTO userProfileDetail);
         Task<DailyMenuResponseDto> GetDailyMenuAsync(DailyMenuRequestDto dailyMenuRequestDto);

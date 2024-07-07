@@ -11,5 +11,6 @@ namespace RecommendationEngineServerSide.Service.RecommendationService
     {
         Task<List<ListMenuDTO>> GetPoorRatedMenuList();
         Task<List<MenuItemDTO>> GetRecommendedMenuItems();
+        Task<List<MenuItemDTO>> GetPersonalizedDailyMenu(int userId, DateTime date);
     }
 }

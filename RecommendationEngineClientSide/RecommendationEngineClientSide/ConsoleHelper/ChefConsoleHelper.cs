@@ -22,19 +22,6 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             _loginDate = loginDate;
             _userName=userName;
-            //var notificationsResponse = await _chefService.FetchNotificationsAsync(userName);
-            //if (notificationsResponse.Status == "Success")
-            //{
-            //    Console.WriteLine("Notifications:");
-            //    foreach (var notification in notificationsResponse.Notifications)
-            //    {
-            //        Console.WriteLine($"- {notification}\n");
-            //    }
-            //}
-            //else
-            //{
-            //    Console.WriteLine($" {notificationsResponse.Message}");
-            //}
             await GetDailyNotification();
             await GetMonthlyNotification();
             bool continueLoop = true;
@@ -68,13 +55,21 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         private async Task GetDailyNotification()
         {
             var notificationsResponse = await _chefService.FetchNotificationsAsync(_userName);
-            if (notificationsResponse.Status == "Success" && notificationsResponse.Notifications.Count>0)
+            if (notificationsResponse.Status == "Success" )
             {
-                Console.WriteLine("Notifications:");
-                foreach (var notification in notificationsResponse.Notifications)
+                if(notificationsResponse.Notifications.Count > 0)
                 {
-                    Console.WriteLine($"- {notification}\n");
+                    Console.WriteLine("Notifications:");
+                    foreach (var notification in notificationsResponse.Notifications)
+                    {
+                        Console.WriteLine($"- {notification}\n");
+                    }
                 }
+                else
+                {
+                    Console.WriteLine("No new notifications today.\n");
+                }
+                
             }
             else
             {
@@ -86,14 +81,17 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             
             var notificationsResponse = await _chefService.FetchMonthlyNotificationASync(_loginDate);
-            if (notificationsResponse.Status == "Success" && notificationsResponse.Menu.Count>0)
+            if (notificationsResponse.Status == "Success"  )
             {
-                //Console.WriteLine("Notifications:");
-                //foreach (var notification in notificationsResponse.Notifications)
-                //{
-                //    Console.WriteLine($"- {notification}\n");
-                //}
-                await GetChefChoice(notificationsResponse);
+                if(notificationsResponse.Menu.Count > 0)
+                {
+                    await GetChefChoice(notificationsResponse);
+                }
+                
+            }
+            else if(notificationsResponse.Message== "It hasn't been a month since the last deletion of items.")
+            {
+
             }
             else
             {
@@ -139,7 +137,6 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             }
         }
 
-
         private async Task AddDailyMenuAsync()
         {
             try
@@ -181,7 +178,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 Console.WriteLine("{0,-20} {1,-10}", "Menu", "Rating");
                 foreach (var item in menuItems)
                 {
-                    Console.WriteLine("{0,-20} {1,-10}", item.MenuItemName.ToLower(), item.Rating);
+                    Console.WriteLine("{0,-20} {1,-10:F2}", item.MenuItemName.ToLower(), item.Rating);
                 }
 
                 for (int i = 0; i < menuItems.Count; i++)

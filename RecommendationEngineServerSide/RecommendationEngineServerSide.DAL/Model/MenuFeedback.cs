@@ -13,7 +13,9 @@ namespace RecommendationEngineServerSide.DAL.Model
         public virtual Menu Menu { get; set; }
         public int UserId { get; set; }
         public virtual User User { get; set; }
-        public int QuestionId { get; set; }
+        public int MenuFeedbackQuestionId { get; set; }
         public virtual MenuFeedbackQuestion MenuFeedbackQuestion { get; set; }
+
+        public string MenuFeedbackAnswer { get; set; }
     }
 }

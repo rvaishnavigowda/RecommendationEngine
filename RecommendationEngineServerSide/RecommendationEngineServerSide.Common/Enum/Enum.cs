@@ -27,4 +27,29 @@ namespace RecommendationEngineServerSide.Common.Enum
         Deletd=2,
         DIscarded=3,
     }
+
+    public enum FoodType
+    {
+        Veg=1,
+        NonVeg,
+        Egg,
+    }
+
+    public enum CuisineType
+    {
+        NorthIndian=1,
+        SouthIndian,
+        Chinese
+    }
+    public enum SpiceLevel
+    {
+        Low=1,
+        Medium,
+        High
+    }
+    public enum SweetLevel
+    {
+        No=0,
+        Yes=1
+    }
 }

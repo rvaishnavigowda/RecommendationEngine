@@ -40,12 +40,11 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
                 };
             }
         }
-
         public async Task<NotificationDTO> HandleGetMonthlyNotification(string userName)
         {
             try
             {
-                var notifications = await _employeeService.UpgradeMenuFeedback(userName);
+                var notifications = await _employeeService.GetMonthlyNotification(userName);
 
                 return notifications;
             }
@@ -58,7 +57,27 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
                 };
             }
         }
-
+        public async Task<SocketResponseDTO> HandleMenuUpgradeFeedback(UserMenuUpgradeDTO userMenuUpgrade)
+        {
+            try
+            {
+                await _employeeService.AddMenuImprovementFeedback(userMenuUpgrade);
+                SocketResponseDTO updateResponse = new SocketResponseDTO()
+                {
+                    Message = "Your feedback to upgrade the menu has been sent to chef. Thankyou",
+                    Status = "Success"
+                };
+                return updateResponse;
+            }
+            catch(Exception ex)
+            {
+                return new SocketResponseDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<EmployeeUpdateDTO> HandleGetUserProfile(string userName)
         {
             try
@@ -76,8 +95,27 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
                 };
             }
         }
-
-
+        public async Task<SocketResponseDTO> HandleUpdateUserProfile(UserProfileDetailDTO userProfileDetail )
+        {
+            try
+            {
+                await _employeeService.UpdateUserProfile(userProfileDetail);
+                SocketResponseDTO response = new SocketResponseDTO()
+                {
+                    Status = "Success",
+                    Message = "Your profile is updated carefully."
+                };
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return new EmployeeUpdateDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<DailyMenuDTO> HandleGetDailyMenu(string userName, DateTime currentDate)
         {
             try
@@ -125,7 +163,6 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
                 };
             }
         }
-
         public async Task<OrderDetailDTO> HandlePlaceOrder(OrderDetailDTO orderDetailDTO)
         {
             try
@@ -168,7 +205,6 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
                 };
             }
         }
-
         public async Task<SocketResponseDTO> HandleGiveFeedback(FeedbackDTO feedbackDTO)
         {
             try

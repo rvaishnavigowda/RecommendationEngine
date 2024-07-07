@@ -4,6 +4,7 @@ using RecommendationEngineServerSide.Common.Exceptions;
 using RecommendationEngineServerSide.DAL.Model;
 using RecommendationEngineServerSide.DAL.UnitfWork;
 using RecommendationEngineServerSide.Service.NotificationService;
+using RecommendationEngineServerSide.Service.RecommendationService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +18,15 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;   
         private readonly INotificationService _notificationService;
+        private readonly IRecommendationService _recommendationService;
 
-        public EmplyoeeService(IUnitOfWork unitOfWork, IMapper mapper, INotificationService notificationService)
+        public EmplyoeeService(IUnitOfWork unitOfWork, IMapper mapper, INotificationService notificationService, IRecommendationService recommendationService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _notificationService = notificationService;
+            _recommendationService= recommendationService;
         }
-
 
         public async Task<List<string>> GetNotification(string userName)
         {
@@ -34,7 +36,7 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
             return notification;
         }
         
-        public async Task<NotificationDTO> UpgradeMenuFeedback(string userName)
+        public async Task<NotificationDTO> GetMonthlyNotification(string userName)
         {
             var feedback = await _notificationService.GetMenuUpgradeFeedback(userName);
             if (feedback != null)
@@ -42,9 +44,9 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                 List<string> feedbackList = new List<string>();
                 
                 var feedbackNotification = (await _unitOfWork.MenuFeedbackQuestion.GetAll()).ToList();
-                foreach(var item in feedbackList)
+                foreach(var item in feedbackNotification)
                 {
-                    feedbackList.Add(item);
+                    feedbackList.Add(item.MenuFeedbackQuestionTitle);
                 }
                 return new NotificationDTO
                 {
@@ -59,6 +61,40 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
             }
         }
 
+        public async Task AddMenuImprovementFeedback(UserMenuUpgradeDTO feedback)
+        {
+            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == feedback.UserName);
+            if(isUserPresent != null)
+            {
+                var menuDetails = (await _unitOfWork.Menu.GetAll()).FirstOrDefault(a => a.MenuName.ToLower() == feedback.MenuName);
+                if(menuDetails != null)
+                {
+                    int i = 1;
+                    foreach(var item in feedback.menuFeedback)
+                    {
+                        MenuFeedback userFeedback = new MenuFeedback()
+                        {
+                            UserId = isUserPresent.UserId,
+                            MenuId = menuDetails.MenuId,
+                            MenuFeedbackQuestionId = i,
+                            MenuFeedbackAnswer = item
+                        };
+                        await _unitOfWork.MenuFeedback.Create(userFeedback);
+                        await _unitOfWork.Save();
+                        i++;
+                    }
+                }
+                else
+                {
+                    throw MenuException.HandleNoMenuFound();
+                }
+            }
+            else
+            {
+                throw LoginException.NoUserPresent();
+            }
+
+        }
         public async Task<EmployeeUpdateDTO> GetUserPreference(string userName)
         {
             var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName == userName);
@@ -106,6 +142,57 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
             }
         }
 
+        public async Task UpdateUserProfile(UserProfileDetailDTO profile)
+        {
+            if (profile != null)
+            {
+                var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName == profile.userName);
+                if (isUserPresent != null)
+                {
+                    var userProfiles = (await _unitOfWork.UserProfile.GetAll()).Where(a => a.UserId == isUserPresent.UserId).ToList();
+                    var profileQuestions = (await _unitOfWork.ProfileQuestion.GetAll()).ToList();
+                    var profileAnswers = (await _unitOfWork.ProfileAnswer.GetAll()).ToList();
+
+                    for (int i = 0; i < profile.userResponse.Count; i++)
+                    {
+                        if (i >= profileQuestions.Count)
+                            break;
+
+                        var profileQuestion = profileQuestions[i];
+                        var answer = profile.userResponse[i];
+                        var profileAnswer = profileAnswers.FirstOrDefault(a => a.ProfileQuestionId == profileQuestion.PQId && a.ProfileAnswerSolution == answer);
+
+                        if (profileAnswer != null)
+                        {
+                            var existingUserProfile = userProfiles.FirstOrDefault(up => up.ProfileAnswer.ProfileQuestionId == profileAnswer.ProfileQuestionId);
+
+                            if (existingUserProfile == null)
+                            {
+                                var newUserProfile = new UserProfile
+                                {
+                                    UserId = isUserPresent.UserId,
+                                    ProfileAnswerId = profileAnswer.PAId
+                                };
+                                await _unitOfWork.UserProfile.Add(newUserProfile);
+                            }
+                            else
+                            {
+                                existingUserProfile.ProfileAnswerId = profileAnswer.PAId;
+                                await _unitOfWork.UserProfile.Update(existingUserProfile);
+                                
+                            }
+                        }
+                    }
+
+                    await _unitOfWork.Save();
+                }
+                else
+                {
+                    LoginException.NoUserPresent();
+                }
+            }
+        }
+
         public async Task<DailyMenuDTO> GetDailyMenuList(DailyMenuDTO dailyMenu)
         {
             var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == dailyMenu.UserName);
@@ -120,17 +207,16 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                         CurrentDate = dailyMenu.CurrentDate,
                         MenuList = new List<DailyMenuList>()
                     };
-
-                    var dailyMenuList = (await _unitOfWork.DailyMenu.GetAll()).Where(a => a.DailyMenuDate == dailyMenu.CurrentDate).ToList();
+                    var dailyMenuList = await _recommendationService.GetPersonalizedDailyMenu(isUserPresent.UserId, dailyMenu.CurrentDate);
                     if (dailyMenuList.Count > 0)
                     {
                         foreach (var menuItem in dailyMenuList)
                         {
                             menuList.MenuList.Add(new DailyMenuList
                             {
-                                MenuName = menuItem.Menu.MenuName,
-                                Price = menuItem.Menu.Price,
-                                MenuType=menuItem.Menu.MenuType.MenuTypeName
+                                MenuName = menuItem.MenuItemName,
+                                Price = menuItem.Price,
+                                MenuType=menuItem.MenuItemType
                             });
                         }
                         await CalculateMenuRating(menuList);
@@ -174,8 +260,7 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                 throw  LoginException.NoUserPresent();
             }
             
-        }
-        
+        }      
 
         public async Task<OrderDetailDTO> PlaceOrder(OrderDetailDTO orderDetailDTO)
         {
@@ -277,7 +362,8 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
                     var isMenuItemPresent=(await _unitOfWork.DailyMenu.GetAll()).FirstOrDefault(a=>a.Menu.MenuName.ToLower() == feedbackDTO.MenuName);
                     if (isMenuItemPresent != null)
                     {
-                        var isFeedbackGiven = (await _unitOfWork.Feedback.GetAll()).Where(a => a.FeedbackDate == feedbackDTO.FeedbackDate && a.MenuId == isMenuItemPresent.MenuId);
+                        
+                        var isFeedbackGiven = (await _unitOfWork.Feedback.GetAll()).Where(a => a.FeedbackDate == feedbackDTO.FeedbackDate && a.MenuId == isMenuItemPresent.MenuId && a.UserId==isUserPresent.UserId);
                         if(!isFeedbackGiven.Any())
                         {
                             Feedback feedback = new Feedback()

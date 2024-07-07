@@ -57,8 +57,6 @@ namespace RecommendationEngineClientSide.DTO
         public string Question { get; set; }
         public List<string> ProfileAnswers { get; set; }
     }
-
-
    
     public class UserProfileDetailDTO
     {

@@ -41,7 +41,6 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
                 };
             }
         }
-
         public async Task<MenuListDTO> HandleMonthlyNotification(DateTime date)
         {
             try
@@ -90,7 +89,6 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
                 };
             }
         }
-
         public async Task<SocketResponseDTO> HandleAddDailyMenu(NewDailyMenuDTO menuList)
         {
             try
@@ -120,12 +118,12 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
                 };
             }
         }
-
         public async Task<SocketResponseDTO> HandleDiscardFoodItem(string menuItem)
         {
             try
             {
                 await _chefService.DiscardMenuItem(menuItem);
+
                 var notificationList = new SocketResponseDTO();
                 notificationList.Status = "Success";
                 notificationList.Message = "The menu item has been successfully discarded";
@@ -140,7 +138,6 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
                 };
             }
         }
-
         public async Task<SocketResponseDTO> HandleImproveFoodItem(UpgradeMenuDto menuItem)
         {
             try
@@ -148,7 +145,7 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
                 await _chefService.ImproviseMenuItem(menuItem);
                 var notificationList = new SocketResponseDTO();
                 notificationList.Status = "Success";
-                notificationList.Message = "The menu item has been successfully discarded";
+                notificationList.Message = "The notification has successfully sent to employees to improvise the menu item.";
                 return notificationList;
             }
             catch (Exception ex)

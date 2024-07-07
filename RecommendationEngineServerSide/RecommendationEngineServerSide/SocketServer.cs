@@ -49,7 +49,7 @@ public class SocketServer
                 Console.WriteLine($"Received: {requestJson}");
 
                 var responseJson = await HandleRequestAsync(requestJson);
-
+                Console.WriteLine("Response: "+ responseJson);
                 var responseBytes = Encoding.UTF8.GetBytes(responseJson);
                 await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
             }

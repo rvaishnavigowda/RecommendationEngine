@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net.WebSockets;
+using System.Text.Json;
 using Microsoft.Identity.Client;
 using RecommendationEngineServerSide.Common.DTO;
 using RecommendationEngineServerSide.Controller.AdminControllers;
@@ -111,10 +112,18 @@ namespace RecommendationEngineServerSide.Controller
                     var feedbacks=await DeserializeJson<userDto > (data);
                     var monthlyFeedbacks = await _employeeController.HandleGetMonthlyNotification(feedbacks.UserName);
                     return await SerializeJson(monthlyFeedbacks);
+                case "HandleMenuUpgradeFeedback":
+                    var userMenuUpgrade= await DeserializeJson<UserMenuUpgradeDTO> (data);
+                    var menuUpgradeResponse=await _employeeController.HandleMenuUpgradeFeedback(userMenuUpgrade);
+                    return await SerializeJson(menuUpgradeResponse);
                 case "HandleGetUserProfile":
                     var userDetail=await DeserializeJson<userDto> (data);
                     var userProfile=await _employeeController.HandleGetUserProfile(userDetail.UserName);
                     return await SerializeJson(userProfile);
+                case "HandleUpdateUserProfile":
+                    var userProfileDetails=await DeserializeJson<UserProfileDetailDTO> (data);
+                    var updateResponse= await _employeeController.HandleUpdateUserProfile(userProfileDetails);
+                    return await SerializeJson(updateResponse);
                 default:
                     throw new ArgumentException("Invalid action name");
             }

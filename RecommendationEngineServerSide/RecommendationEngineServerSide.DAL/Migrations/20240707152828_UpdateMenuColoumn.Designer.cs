@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecommendationEngineServerSide.DAL.Context;
 
@@ -11,9 +12,11 @@ using RecommendationEngineServerSide.DAL.Context;
 namespace RecommendationEngineServerSide.DAL.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20240707152828_UpdateMenuColoumn")]
+    partial class UpdateMenuColoumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,13 +168,13 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MenuFeedbackId"));
 
-                    b.Property<string>("MenuFeedbackAnswer")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("MenuFeedbackQuestionId")
+                    b.Property<int?>("MenuFeedbackQuestionId")
                         .HasColumnType("int");
 
                     b.Property<int>("MenuId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -498,9 +501,7 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                 {
                     b.HasOne("RecommendationEngineServerSide.DAL.Model.MenuFeedbackQuestion", "MenuFeedbackQuestion")
                         .WithMany()
-                        .HasForeignKey("MenuFeedbackQuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MenuFeedbackQuestionId");
 
                     b.HasOne("RecommendationEngineServerSide.DAL.Model.Menu", "Menu")
                         .WithMany()

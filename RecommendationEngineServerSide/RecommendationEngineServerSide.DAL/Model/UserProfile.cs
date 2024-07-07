@@ -11,7 +11,7 @@ namespace RecommendationEngineServerSide.DAL.Model
         public int UserProfileId { get; set; }
         public int UserId { get; set; }
         public virtual User User { get; set; }
-        public int PreferenceId { get; set; }
+        public int ProfileAnswerId { get; set; }
         public virtual ProfileAnswer ProfileAnswer { get; set; }
     }
 }

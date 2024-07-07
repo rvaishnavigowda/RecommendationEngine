@@ -16,7 +16,7 @@
         public string MenuName { get; set; }
         public decimal Price { get; set; }
         public string MenuType { get; set; }
-        public int Rating { get; set; }
+        public decimal Rating { get; set; }
     }
 
     public class OrderDetailRequestDto : SocketResponseDTO
@@ -43,16 +43,10 @@
         public DateTime FeedbackDate { get; set; }
     }
 
-    public class MenuUpgradeDTO
+    public class UserMenuUpgradeListDTO
     {
-        public int questionNumber { get; set; }
-        public string userAnswer { get; set; }
+        public string UserName { get; set; }
+        public string MenuName { get; set; }
+        public List<string> menuFeedback { get; set; }
     }
-
-    public class MenuUpgradeListDTO
-    {
-        public List<MenuUpgradeDTO> menuFeedback { get; set; }
-    }
-
-
 }

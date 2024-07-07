@@ -97,10 +97,7 @@ namespace RecommendationEngineServerSide.Service.ChefService
         {
             if(menuList != null)
             {
-                //var menu = new DailyMenu()
-                //{
-                //    DailyMenuDate = menuList.CurrentDate,
-                //};
+                
                 var isdailyMenuAdded=(await _unitOfWork.DailyMenu.GetAll()).Any(a=>a.DailyMenuDate==menuList.CurrentDate);
                 if(!isdailyMenuAdded)
                 {
@@ -164,7 +161,6 @@ namespace RecommendationEngineServerSide.Service.ChefService
             int notificationType = (int)NotificationTypeEnum.ImproveMenuItem;
             await UpdateNotification(menuItem.CurrentDate, notificationMessage, notificationType);
         }
-
         private async Task UpdateNotification(DateTime date, string notifiction, int notificationType)
         {
             await _notificationService.AddNotification(notifiction, notificationType, date);

@@ -75,7 +75,7 @@ namespace RecommendationEngineServerSide.UnitTest
             string userName = "testUser";
             var notificationDTO = new NotificationDTO { Status = "Success", Message = "Monthly notification retrieved." };
 
-            _mockEmployeeService.Setup(service => service.UpgradeMenuFeedback(userName)).ReturnsAsync(notificationDTO);
+            _mockEmployeeService.Setup(service => service.GetMonthlyNotification(userName)).ReturnsAsync(notificationDTO);
 
             // Act
             var result = await _employeeController.HandleGetMonthlyNotification(userName);
@@ -93,7 +93,7 @@ namespace RecommendationEngineServerSide.UnitTest
             string userName = "testUser";
             var exceptionMessage = "Test exception";
 
-            _mockEmployeeService.Setup(service => service.UpgradeMenuFeedback(userName)).ThrowsAsync(new Exception(exceptionMessage));
+            _mockEmployeeService.Setup(service => service.GetMonthlyNotification(userName)).ThrowsAsync(new Exception(exceptionMessage));
 
             // Act
             var result = await _employeeController.HandleGetMonthlyNotification(userName);

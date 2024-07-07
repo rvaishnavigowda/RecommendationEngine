@@ -70,7 +70,7 @@ namespace RecommendationEngineServerSide.Service.NotificationService
                             }
                             else if(isUserPrsent.UserType.UserTypeName.ToLower() == "employee")
                             {
-                                if(listItem.NotificationType.NotificationTypeId!=3)
+                                if(listItem.NotificationType.NotificationTypeId==1 || listItem.NotificationType.NotificationTypeId==2)
                                 {
                                     notificationList.Add(listItem.NotificationMessage);
 
@@ -104,32 +104,33 @@ namespace RecommendationEngineServerSide.Service.NotificationService
 
         public async Task<string> GetMenuUpgradeFeedback(string userName)
         {
-            var isUserPresent=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName==userName);
-            if(isUserPresent!=null)
+            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName == userName);
+            if (isUserPresent != null)
             {
-                var lastNotification = (await _unitOfWork.UserNotification.GetAll())
-                .Where(un => un.User.UserName == userName)
-                .Join(
-                    await _unitOfWork.Notification.GetAll(),
-                    un => un.NotificationId,
-                    n => n.NotificationId,
-                    (un, n) => new { un, n }
-                    )
-                .Where(x => x.n.NotificationTypeId == 3)
-                .OrderByDescending(x => x.n.NotificationDate)
-                .Select(x => x.n)
-                .FirstOrDefault();
-
-                if (lastNotification != null)
+                var allType4Notifications = (await _unitOfWork.Notification.GetAll())
+                    .Where(n => n.NotificationTypeId == 4)
+                    .OrderByDescending(n => n.NotificationDate)
+                    .ToList();
+                if (allType4Notifications.Any())
                 {
-                    UserNotification userNotification = new UserNotification()
+                    var latestType4Notification = allType4Notifications.First();
+                    var userNotification = (await _unitOfWork.UserNotification.GetAll())
+                        .FirstOrDefault(un => un.UserId == isUserPresent.UserId && un.Notification.NotificationTypeId == 4);
+                    if(userNotification!=null && userNotification.NotificationId==latestType4Notification.NotificationId)
                     {
-                        UserId = isUserPresent.UserId,
-                        NotificationId = lastNotification.NotificationId
-                    };
-                    await _unitOfWork.UserNotification.Add(userNotification);
-                    await _unitOfWork.Save();
-                    return lastNotification.NotificationMessage;
+                        return null;
+                    }
+                    else
+                    {
+                        userNotification = new UserNotification
+                        {
+                            UserId = isUserPresent.UserId,
+                            NotificationId = latestType4Notification.NotificationId
+                        };
+                        await _unitOfWork.UserNotification.Add(userNotification);
+                        await _unitOfWork.Save();
+                        return latestType4Notification.NotificationMessage;
+                    }                 
                 }
                 else
                 {

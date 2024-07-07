@@ -28,7 +28,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             bool continueLoop = true;
             while (continueLoop)
             {
-                Console.WriteLine("Welcome, Employee! Choose an option:");
+                Console.WriteLine("\nWelcome, Employee! Choose an option:");
                 Console.WriteLine("1. Get Daily Menu");
                 Console.WriteLine("2. Place Order");
                 Console.WriteLine("3. Give Feedback");
@@ -61,45 +61,70 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             }
         }
 
+        #region Private Methods
         private async Task HandleDailyNotification()
         {
             var notificationsResponse = await _employeeService.FetchNotificationsAsync(_username);
             if (notificationsResponse.Status == "Success")
             {
-                Console.WriteLine("Notifications:");
-                foreach (var notification in notificationsResponse.Notifications)
+                if(notificationsResponse.Notifications.Count>0)
                 {
-                    Console.WriteLine($"- {notification}\n");
+                    foreach (var notification in notificationsResponse.Notifications)
+                    {
+                        Console.WriteLine("Notifications:");
+                        Console.WriteLine($"- {notification}\n");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No new notifications today.\n");
                 }
             }
-            else
+            else if(notificationsResponse.Message== "There are no notifications to show") { }
+            else 
             {
                 Console.WriteLine($" {notificationsResponse.Message}");
             }
         }
-
         private async Task HandleImproveMenuItem()
         {
-            var notification=await _employeeService.FetchFeedbackQuestion(_username);
-            if(notification.Status == "Success")
-            {
+            var notification = await _employeeService.FetchFeedbackQuestion(_username);
+            if (notification.Status == "Success")
+            { 
                 Console.WriteLine(notification.Message);
-                MenuUpgradeListDTO menuUpgradeList = new MenuUpgradeListDTO()
+                UserMenuUpgradeListDTO userMenuUpgradeList = new UserMenuUpgradeListDTO()
                 {
-                    menuFeedback = new List<MenuUpgradeDTO>()
+                    UserName = _username,
+                    MenuName = notification.Message.Split(':')[1].Replace(" ", "").ToLower(),
+
+                    menuFeedback = new List<string>()
                 };
-                int numberCount = 1;
-                foreach(var item in notification.Notifications)
+                foreach (var item in notification.Notifications)
                 {
-                    Console.WriteLine(item, "\n");
-                    MenuUpgradeDTO userAnswer = new MenuUpgradeDTO();
-                    userAnswer.userAnswer = Console.ReadLine();
-                    userAnswer.questionNumber = numberCount;
-                    numberCount++;
-                   
+                    Console.WriteLine(item);
+                    string userInput = Console.ReadLine();
+                    userMenuUpgradeList.menuFeedback.Add(userInput);
+                }
+                var serverResponse = await _employeeService.UpdateMenuUpgradeFeedback(userMenuUpgradeList);
+                if (serverResponse.Status == "Success")
+                {
+                    Console.WriteLine(serverResponse.Message);
+                }
+                else
+                {
+                    Console.WriteLine(serverResponse.Message);
                 }
             }
+            else if(notification.Message== "There are no monthly notifications.")
+            {
+
+            }
+            else
+            {
+                Console.WriteLine(notification.Message);
+            }
         }
+
         private async Task GetDailyMenuAsync()
         {
             try
@@ -128,7 +153,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
 
                             foreach (var menuItem in group)
                             {
-                                Console.WriteLine("{0,-20} {1,10:F2} {2,10}", menuItem.MenuName, menuItem.Price, menuItem.Rating);
+                                Console.WriteLine("{0,-20} {1,10:F2} {2,10:F2}", menuItem.MenuName, menuItem.Price, menuItem.Rating);
                             }
                         }
                     }
@@ -158,8 +183,6 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
-
-
         private async Task PlaceOrderAsync()
         {
             try
@@ -218,8 +241,6 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 Console.WriteLine($"An error occurred: {ex.Message}\n");
             }
         }
-
-
         private async Task GiveFeedbackAsync()
         {
             try
@@ -255,7 +276,6 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
-
         private async Task UserProfileUpdateAsync()
         {
             try
@@ -297,7 +317,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                         userResponse = questionAnswerPairs
                     };
                     var submitResponse = await _employeeService.SubmitUserProfileAnswers(userProfileDetail);
-                    Console.WriteLine(submitResponse.Message);
+                    Console.WriteLine(submitResponse.Message, "\n");
                 }
                 else
                 {
@@ -309,5 +329,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
+
+        #endregion
     }
 }

@@ -83,11 +83,6 @@ namespace RecommendationEngineServerSide.Service.AdminService
                 CommonException.NullInputException();
             }
         }
-
-        //public async Task GetNotification()
-        //{
-        //    _notificationService.Get
-        //}
         public async Task<FetchMenuDTO> GetMenuDetailsByName(string menuName)
         {
             var isMenuNamePresent=(await _unitOfWork.Menu.GetAll()).Where(a=>a.MenuName.ToLower()==menuName && a.MenuStatus==1).ToList() ;

@@ -78,7 +78,7 @@ namespace RecommendationEngineClientSide.Services.ChefServices
             {
                 Controller = "ChefController",
                 Action = "HandleDiscardFoodItem",
-                Data = new { MenuItemName = itemName }
+                Data = itemName
             };
 
             string requestJson = JsonConvert.SerializeObject(removeFoodItemRequest);

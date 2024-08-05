@@ -105,7 +105,8 @@ namespace RecommendationEngineServerSide.Service.RecommendationService
                         {
                             MenuItemName = menu.MenuItemName,
                             MenuItemType = menu.MenuItemType,
-                            Rating = menu.CombinedRating
+                            Rating = menu.CombinedRating,
+                            OrderCount=menu.OrderCount
                         };
                         menuItems.Add(listMenu);
                     }

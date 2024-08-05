@@ -14,13 +14,13 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
             _requestService = requestService;
         }
 
-        public async Task<NotificationDTO> FetchNotificationsAsync(string userName)
+        public async Task<NotificationDTO> FetchNotificationsAsync(DailyMenuRequestDto userDetails)
         {
             var fetchNotificationRequest = new
             {
                 Controller = "EmployeeController",
                 Action = "HandleGetNotification",
-                Data = new { UserName = userName }
+                Data = userDetails
             };
 
             string requestJson = JsonConvert.SerializeObject(fetchNotificationRequest);
@@ -86,6 +86,20 @@ namespace RecommendationEngineClientSide.Services.EmployeeServices
             return socketResponse;
         }
 
+        public async Task<DailyOrderDetailsDTO> GetOrderList(DailyMenuRequestDto dailyMenuRequest)
+        {
+            var placeOrderRequest = new
+            {
+                Controller = "EmployeeController",
+                Action = "HandlePlaceOrder",
+                Data = dailyMenuRequest
+            };
+
+            string requestJson = JsonConvert.SerializeObject(placeOrderRequest);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            var socketResponse = JsonConvert.DeserializeObject<DailyOrderDetailsDTO>(response);
+            return socketResponse;
+        }
         public async Task<SocketResponseDTO> GiveFeedbackAsync(FeedbackDto feedbackDto)
         {
             var giveFeedbackRequest = new

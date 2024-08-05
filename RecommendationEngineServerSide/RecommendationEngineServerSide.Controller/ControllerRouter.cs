@@ -93,8 +93,8 @@ namespace RecommendationEngineServerSide.Controller
             switch (actionName)
             {
                 case "HandleGetNotification":
-                    var userName= await DeserializeJson<userDto>(data);
-                    var notificationresult= await _employeeController.HandleGetNotification(userName.UserName);
+                    var userName= await DeserializeJson<DailyMenuDTO>(data);
+                    var notificationresult= await _employeeController.HandleGetNotification(userName);
                     return await SerializeJson(notificationresult);
                 case "HandleGetDailyMenu":
                     var dailyMenuRequest = await DeserializeJson<DailyMenuDTO>(data);
@@ -104,6 +104,10 @@ namespace RecommendationEngineServerSide.Controller
                     var orderDetailDTO = await DeserializeJson<OrderDetailDTO>(data);
                     var placeOrderResult = await _employeeController.HandlePlaceOrder(orderDetailDTO);
                     return await SerializeJson(placeOrderResult);
+                case "HandleGetOrderList":
+                    var user= await DeserializeJson<DailyMenuDTO>(data);
+                    var details= await _employeeController.HandleGetOrderList(user);
+                    return await SerializeJson(details);
                 case "HandleGiveFeedback":
                     var feedbackDTO = await DeserializeJson<FeedbackDTO>(data);
                     var giveFeedbackResult = await _employeeController.HandleGiveFeedback(feedbackDTO);
@@ -134,8 +138,8 @@ namespace RecommendationEngineServerSide.Controller
             switch (actionName)
             {
                 case "HandleGetNotification":
-                    var requestObject = JsonSerializer.Deserialize<userDto>(data);
-                    var notificationresult = await _chefController.HandleGetNotification(requestObject.UserName);
+                    var requestObject = JsonSerializer.Deserialize<DailyMenuDTO>(data);
+                    var notificationresult = await _chefController.HandleGetNotification(requestObject);
                     return await SerializeJson(notificationresult);
                 case "HandleMontlyNotification":
                     var currentDate = JsonSerializer.Deserialize<DateTime> (data);
@@ -157,6 +161,10 @@ namespace RecommendationEngineServerSide.Controller
                     var itemDetails=await DeserializeJson<UpgradeMenuDto>(data);
                     var improveItemresult = await _chefController.HandleImproveFoodItem(itemDetails);
                     return await SerializeJson(improveItemresult);
+                case "HandleOrderList":
+                    date= await DeserializeJson<DateTime>(data);
+                    var orderList= await _chefController.HandleOrderList(date);
+                    return await SerializeJson(orderList);
                 default:
                     throw new ArgumentException("Invalid action name");
             }

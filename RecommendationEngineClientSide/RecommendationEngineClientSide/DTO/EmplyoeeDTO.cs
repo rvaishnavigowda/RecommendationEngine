@@ -34,6 +34,14 @@
 
     }
 
+    public class OrderDTO :SocketResponseDTO
+    {
+        public string MenuName { get; set; }
+        public int OrderCount { get; set; }
+
+        public List<OrderDTO> OrderList { get; set; }
+    }
+
     public class FeedbackDto
     {
         public string UserName { get; set; }
@@ -48,5 +56,10 @@
         public string UserName { get; set; }
         public string MenuName { get; set; }
         public List<string> menuFeedback { get; set; }
+    }
+    public class DailyOrderDetailsDTO : SocketResponseDTO
+    {
+        public List<string> OrderItem { get; set; }
+
     }
 }

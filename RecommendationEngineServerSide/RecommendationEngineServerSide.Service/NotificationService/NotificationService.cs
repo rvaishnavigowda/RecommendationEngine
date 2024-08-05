@@ -32,17 +32,13 @@ namespace RecommendationEngineServerSide.Service.NotificationService
             await _unitOfWork.Save();
         }
 
-        public async Task<List<string>> GetNotification(int userId)
+        public async Task<List<string>> GetNotification(int userId, DateTime date)
         {
-            var isUserPrsent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserId == userId);
-            if (isUserPrsent != null)
+            var isUserPresent = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserId == userId);
+            if (isUserPresent != null)
             {
 
                 var lastNotification = (await _unitOfWork.UserNotification.GetAll()).LastOrDefault(a => a.UserId == userId);
-                //var lastNotification = (await _unitOfWork.UserNotification.GetAll())
-                //            .Where(a => a.UserId == userId)
-                //            .OrderByDescending(a => a.NotificationId)
-                //            .FirstOrDefault();
                 if (lastNotification != null)
                 {
                     List<string> notificationList = new List<string>();
@@ -52,35 +48,50 @@ namespace RecommendationEngineServerSide.Service.NotificationService
                         
                         foreach (var listItem in notification)
                         {
-                            if(isUserPrsent.UserType.UserTypeName.ToLower()=="chef")
+                            if(isUserPresent.UserType.UserTypeName.ToLower()=="chef")
                             {
-                                if(listItem.NotificationType.NotificationTypeId==1)
+                                if(listItem.NotificationTypeId==1)
                                 {
                                     notificationList.Add(listItem.NotificationMessage);
                                     UserNotification userNotification = new UserNotification()
                                     {
                                         UserId = userId,
                                         NotificationId = listItem.NotificationId
-                                };
+                                    };
                                     
                                     await _unitOfWork.UserNotification.Add(userNotification);
                                     await _unitOfWork.Save();
                                 }
                                 
                             }
-                            else if(isUserPrsent.UserType.UserTypeName.ToLower() == "employee")
+                            else if(isUserPresent.UserType.UserTypeName.ToLower() == "employee")
                             {
-                                if(listItem.NotificationType.NotificationTypeId==1 || listItem.NotificationType.NotificationTypeId==2)
+                                if(listItem.NotificationTypeId==1 || listItem.NotificationTypeId==2)
                                 {
-                                    notificationList.Add(listItem.NotificationMessage);
-
-                                    UserNotification userNotification = new UserNotification()
+                                    if(listItem.NotificationDate==date && listItem.NotificationType.NotificationTypeId==2)
                                     {
-                                        UserId = userId,
-                                        NotificationId = listItem.NotificationId
-                                    };
-                                    await _unitOfWork.UserNotification.Add(userNotification);
-                                    await _unitOfWork.Save();
+                                        notificationList.Add(listItem.NotificationMessage);
+
+                                        UserNotification userNotification = new UserNotification()
+                                        {
+                                            UserId = userId,
+                                            NotificationId = listItem.NotificationId
+                                        };
+                                        await _unitOfWork.UserNotification.Add(userNotification);
+                                        await _unitOfWork.Save();
+                                    }
+                                    else if(listItem.NotificationType.NotificationTypeId==1)
+                                    {
+                                        notificationList.Add(listItem.NotificationMessage);
+
+                                        UserNotification userNotification = new UserNotification()
+                                        {
+                                            UserId = userId,
+                                            NotificationId = listItem.NotificationId
+                                        };
+                                        await _unitOfWork.UserNotification.Add(userNotification);
+                                        await _unitOfWork.Save();
+                                    }
                                 }
                             }
                         }
@@ -115,8 +126,8 @@ namespace RecommendationEngineServerSide.Service.NotificationService
                 {
                     var latestType4Notification = allType4Notifications.First();
                     var userNotification = (await _unitOfWork.UserNotification.GetAll())
-                        .FirstOrDefault(un => un.UserId == isUserPresent.UserId && un.Notification.NotificationTypeId == 4);
-                    if(userNotification!=null && userNotification.NotificationId==latestType4Notification.NotificationId)
+                        .LastOrDefault(un => un.UserId == isUserPresent.UserId && un.NotificationId == latestType4Notification.NotificationId);
+                    if(userNotification!=null)
                     {
                         return null;
                     }

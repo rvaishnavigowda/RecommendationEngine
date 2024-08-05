@@ -19,7 +19,7 @@ namespace RecommendationEngineServerSide.Common.Exceptions
 
         public static MenuException HandleDailyMenuAdded()
         {
-            return new MenuException("Daily menu for today has already been added. You can't add menu twice");
+            return new MenuException("Daily menu for today has already been rolled out . You can't roll out menu twice");
         }
 
         public static MenuException HandleNoMenuFound()
@@ -30,6 +30,11 @@ namespace RecommendationEngineServerSide.Common.Exceptions
         public static MenuException HandleNoNotification()
         {
             return new MenuException("It hasn't been a month since the last deletion of items.");
+        }
+
+        public static MenuException HandleMenuNOtRolled()
+        {
+            return new MenuException("You have not rolled out the menu for today yet.");
         }
     }
 }

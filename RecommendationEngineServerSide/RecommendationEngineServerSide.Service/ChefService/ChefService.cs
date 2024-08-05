@@ -27,11 +27,11 @@ namespace RecommendationEngineServerSide.Service.ChefService
             _recommendationService = recommendationService;
         }
 
-        public async Task<List<string>> GetNotification(string userName)
+        public async Task<List<string>> GetNotification(string userName, DateTime date)
         {
-            var userDetails=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName.ToLower()==userName);
+            var userDetail=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName.ToLower()==userName);
             List<string> notification = new List<string>();
-            notification = await _notificationService.GetNotification(userDetails.UserId);
+            notification = await _notificationService.GetNotification(userDetail.UserId, date);
             return notification;
         }
 
@@ -41,7 +41,7 @@ namespace RecommendationEngineServerSide.Service.ChefService
             if(getDailyMenuDetails!=null)
             {
                 double timeSpan = (date - getDailyMenuDetails.DailyMenuDate).TotalDays;
-                if(timeSpan ==30)
+                if(timeSpan%30==0)
                 {
                     MenuListDTO menuList = new MenuListDTO()
                     {
@@ -133,12 +133,30 @@ namespace RecommendationEngineServerSide.Service.ChefService
             }
         }
 
-        public async Task GetOrders(DateTime date)
+        public async Task<OrderDTO> GetOrders(DateTime date)
         {
             var isDailyMenuRolled=(await _unitOfWork.DailyMenu.GetAll()).Where(a=>a.DailyMenuDate.Equals(date)).ToList();
             if(isDailyMenuRolled.Count>0)
             {
-
+                OrderDTO orders = new OrderDTO()
+                {
+                    OrderList = new List<OrderDTO>()
+                };
+                foreach(var item in isDailyMenuRolled)
+                {
+                    var orderCount = (await _unitOfWork.UserOrder.GetAll()).Where(a => a.DailyMenuId == item.DailyMenuId && a.Order.OrderDate == date).ToList().Count();
+                    OrderDTO order = new OrderDTO()
+                    {
+                        MenuName = item.Menu.MenuName,
+                        OrderCount = orderCount
+                    };
+                    orders.OrderList.Add(order);
+                }
+                return orders;
+            }
+            else
+            {
+                throw MenuException.HandleMenuNOtRolled();
             }
         }
         public async Task DiscardMenuItem(string menuItem)

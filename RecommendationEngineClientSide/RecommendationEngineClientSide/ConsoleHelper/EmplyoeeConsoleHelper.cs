@@ -23,17 +23,20 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             _username = userName.ToLower();
             _date = date;
+
+            Console.WriteLine("\nWelcome, " + _username + "\nChoose an option:\n");
             await HandleDailyNotification();
             await HandleImproveMenuItem();
             bool continueLoop = true;
             while (continueLoop)
             {
-                Console.WriteLine("\nWelcome, Employee! Choose an option:");
+                Console.WriteLine();
                 Console.WriteLine("1. Get Daily Menu");
                 Console.WriteLine("2. Place Order");
                 Console.WriteLine("3. Give Feedback");
                 Console.WriteLine("4. Profile Update");
                 Console.WriteLine("5. Logout");
+                Console.Write("Your Choice: ");
                 string choice = Console.ReadLine();
 
                 switch (choice)
@@ -52,7 +55,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                         break;
                     case "5":
                         continueLoop = false;
-                        Console.WriteLine("Logging out...");
+                        Console.WriteLine("Logging out...\n");
                         break;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
@@ -64,26 +67,31 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         #region Private Methods
         private async Task HandleDailyNotification()
         {
-            var notificationsResponse = await _employeeService.FetchNotificationsAsync(_username);
+            DailyMenuRequestDto userDetails = new DailyMenuRequestDto()
+            {
+                UserName = _username,
+                CurrentDate = _date,
+            };
+            var notificationsResponse = await _employeeService.FetchNotificationsAsync(userDetails);
             if (notificationsResponse.Status == "Success")
             {
                 if(notificationsResponse.Notifications.Count>0)
                 {
+
+                    Console.WriteLine("Notifications:");
                     foreach (var notification in notificationsResponse.Notifications)
                     {
-                        Console.WriteLine("Notifications:");
                         Console.WriteLine($"- {notification}\n");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("No new notifications today.\n");
+                    Console.WriteLine("No new notifications today.");
                 }
             }
-            else if(notificationsResponse.Message== "There are no notifications to show") { }
             else 
             {
-                Console.WriteLine($" {notificationsResponse.Message}");
+                Console.WriteLine($"{notificationsResponse.Message}");
             }
         }
         private async Task HandleImproveMenuItem()
@@ -91,7 +99,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             var notification = await _employeeService.FetchFeedbackQuestion(_username);
             if (notification.Status == "Success")
             { 
-                Console.WriteLine(notification.Message);
+                Console.WriteLine(notification.Message+"\n");
                 UserMenuUpgradeListDTO userMenuUpgradeList = new UserMenuUpgradeListDTO()
                 {
                     UserName = _username,
@@ -148,6 +156,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                         foreach (var group in groupedMenuItems)
                         {
                             Console.WriteLine($"\n{char.ToUpper(group.Key[0]) + group.Key.Substring(1)}:");
+                            Console.WriteLine(new string('-', 42));
                             Console.WriteLine("{0,-20} {1,10} {2,10}", "Menu", "Price", "Rating");
                             Console.WriteLine(new string('-', 42));
 
@@ -217,8 +226,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
 
                 var response = await _employeeService.PlaceOrderAsync(orderDetailRequestDto);
                 Console.WriteLine(response.Message);
-                //if(response.Status=="Success")
-                //{
+                
                     if (response.Items != null && response.Items.Count > 0)
                     {
                         Console.WriteLine("\nOrder Details:");
@@ -245,6 +253,20 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             try
             {
+                //DailyMenuRequestDto dailyMenuRequest = new DailyMenuRequestDto()
+                //{
+                //    UserName = _username.ToLower(),
+                //    CurrentDate = _date,
+                //};
+                //var orderresponse = await _employeeService.GetOrderList(dailyMenuRequest);
+                //if(orderresponse.Status=="Success")
+                //{
+                //    Console.WriteLine("Your order list is:\n");
+                //    foreach(var item in orderresponse.OrderItem)
+                //    {
+                //        Console.WriteLine(item +"\n");
+                //    }
+                //}
                 Console.WriteLine("Enter menu item name:");
                 string menuItemName = Console.ReadLine();
 

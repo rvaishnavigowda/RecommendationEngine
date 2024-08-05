@@ -32,6 +32,7 @@ namespace RecommendationEngineServerSide.Service.AdminService
 
             if(menuDTO!=null)
             {
+                
                 var isMenuTypePresent = await CheckMenuType(menuDTO.MenuType);
                 if (isMenuTypePresent != null)
                 {
@@ -43,7 +44,12 @@ namespace RecommendationEngineServerSide.Service.AdminService
                         {
                             MenuName = menuDTO.MenuName,
                             MenuTypeId = isMenuTypePresent.MenuTypeId,
-                            Price = menuDTO.MenuPrice
+                            Price = menuDTO.MenuPrice,
+                            FoodTypeId=menuDTO.FoodType,
+                            CuisineTypeId=menuDTO.CuisineType,
+                            SpiceLevel=menuDTO.SpiceLevel,
+                            IsSweet=menuDTO.IsSweet,
+                            MenuStatus=(int)MenuStatus.Active
                         };
                         await _unitOfWork.Menu.Add(menu);
                         await _unitOfWork.Save();

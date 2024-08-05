@@ -23,9 +23,10 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             _loginDate=loginDate;
             bool continueLoop = true;
+
+            Console.WriteLine("Welcome, Admin! \nChoose an option:");
             while (continueLoop)
             {
-                Console.WriteLine("Welcome, Admin! Choose an option:");
                 Console.WriteLine("1. Add Menu");
                 Console.WriteLine("2. Update Menu");
                 Console.WriteLine("3. Delete Menu");
@@ -77,23 +78,77 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                     return;
                 }
 
+                // Show options and get input for FoodType
+                Console.WriteLine("Select food type:");
+                Console.WriteLine("1 - Veg");
+                Console.WriteLine("2 - NonVeg");
+                Console.WriteLine("3 - Egg");
+                if (!int.TryParse(Console.ReadLine(), out int foodType) || foodType < 1 || foodType > 3)
+                {
+                    Console.WriteLine("Invalid food type. Please try again.");
+                    return;
+                }
+
+                Console.WriteLine("Select cuisine type:");
+                Console.WriteLine("1 - NorthIndian");
+                Console.WriteLine("2 - SouthIndian");
+                Console.WriteLine("3 - Chinese");
+                if (!int.TryParse(Console.ReadLine(), out int cuisineType) || cuisineType < 1 || cuisineType > 3)
+                {
+                    Console.WriteLine("Invalid cuisine type. Please try again.");
+                    return;
+                }
+
+                // Show options and get input for SpiceLevel
+                Console.WriteLine("Select spice level:");
+                Console.WriteLine("1 - Low");
+                Console.WriteLine("2 - Medium");
+                Console.WriteLine("3 - High");
+                if (!int.TryParse(Console.ReadLine(), out int spiceLevel) || spiceLevel < 1 || spiceLevel > 3)
+                {
+                    Console.WriteLine("Invalid spice level. Please try again.");
+                    return;
+                }
+
+                // Show options and get input for SweetLevel
+                Console.WriteLine("Is it sweet? (yes/no)");
+                string sweetInput = Console.ReadLine().ToLower();
+                bool isSweet;
+                if (sweetInput == "yes")
+                {
+                    isSweet = true;
+                }
+                else if (sweetInput == "no")
+                {
+                    isSweet = false;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input for sweetness. Please enter 'yes' or 'no'.");
+                    return;
+                }
+
                 var addMenuRequestDto = new AddMenuRequestDto
                 {
                     MenuName = menuName.ToLower(),
                     MenuType = menuType.ToLower(),
                     MenuPrice = menuPrice,
-                    dateCreated=_loginDate
+                    FoodType = foodType,
+                    CuisineType = cuisineType,
+                    SpiceLevel = spiceLevel,
+                    IsSweet = isSweet,
+                    dateCreated = _loginDate
                 };
 
                 var responseJson = await _adminService.AddMenuAsync(addMenuRequestDto);
-                Console.WriteLine(responseJson.Message );
-
+                Console.WriteLine(responseJson.Message);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
+
 
         private async Task UpdateMenuAsync()
         {
@@ -200,6 +255,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                         Console.WriteLine($"\n{char.ToUpper(group.Key[0]) + group.Key.Substring(1)}:");
                         Console.WriteLine(new string('-', 37));
                         Console.WriteLine("{0,-20} {1,-10}", "Menu", "Price");
+                        Console.WriteLine(new string('-', 37));
                         foreach (var menuItem in group.OrderByDescending(menuItem => menuItem.Rating))
                         {
                             Console.WriteLine("{0,-20} {1,-10:F2}",

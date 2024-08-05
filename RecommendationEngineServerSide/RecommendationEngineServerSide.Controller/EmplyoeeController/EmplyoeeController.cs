@@ -18,11 +18,11 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
             _mapper = mapper;
         }
 
-        public async Task<NotificationDTO> HandleGetNotification(string userName)
+        public async Task<NotificationDTO> HandleGetNotification(DailyMenuDTO userDetails)
         {
             try
             {
-                var notifications = await _employeeService.GetNotification(userName);
+                var notifications = await _employeeService.GetNotification(userDetails);
 
                 return new NotificationDTO
                 {
@@ -199,6 +199,29 @@ namespace RecommendationEngineServerSide.Controller.EmployeeControllers
             catch (Exception ex)
             {
                 return new OrderDetailDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<DailyOrderDetailsDTO> HandleGetOrderList(DailyMenuDTO dailyMenu)
+        {
+            try
+            {
+                var orderDetail = await _employeeService.GetOrderDetails(dailyMenu.CurrentDate,dailyMenu.UserName);
+
+                return new DailyOrderDetailsDTO
+                {
+                    Status = "Success",
+                    Message = "Order retrieved successfully.",
+                    OrderItem = orderDetail
+                };
+            }
+            catch (Exception ex)
+            {
+                return new DailyOrderDetailsDTO
                 {
                     Status = "Failure",
                     Message = ex.Message

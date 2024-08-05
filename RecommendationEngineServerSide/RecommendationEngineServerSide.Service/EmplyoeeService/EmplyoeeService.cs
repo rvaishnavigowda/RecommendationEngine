@@ -28,11 +28,11 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
             _recommendationService= recommendationService;
         }
 
-        public async Task<List<string>> GetNotification(string userName)
+        public async Task<List<string>> GetNotification(DailyMenuDTO userDetails)
         {
-            var userDetails = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == userName);
+            var userDetail = (await _unitOfWork.User.GetAll()).FirstOrDefault(a => a.UserName.ToLower() == userDetails.UserName);
             List<string> notification = new List<string>();
-            notification = await _notificationService.GetNotification(userDetails.UserId);
+            notification = await _notificationService.GetNotification(userDetail.UserId, userDetails.CurrentDate);
             return notification;
         }
         
@@ -351,6 +351,33 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
             };
         }
 
+        public async Task<List<string>> GetOrderDetails(DateTime orderDate, string userName)
+        {
+            var userDetail=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName == userName);
+            if(userDetail != null)
+            {
+                var orderDetail=(await _unitOfWork.Order.GetAll()).Where(a=>a.UserId== userDetail.UserId && a.OrderDate==orderDate).ToList();
+                if(orderDetail.Count>0)
+                {
+                    List<string> order = new List<string>();
+                    foreach (var item in orderDetail)
+                    {
+                        var userOrder = (await _unitOfWork.UserOrder.GetAll()).Where(a => a.OrderId == item.OrderId).ToList();
+                        foreach(var item2 in userOrder)
+                        {
+                            order.Add(item2.DailyMenu.Menu.MenuName);
+                        }
+                    }
+                    return order;
+                    
+                }
+                throw EmployeeException.HandleOrderNotPlaced();
+            }
+            else
+            {
+                throw LoginException.NoUserPresent();
+            }
+        }
         public async Task GiveFeedback(FeedbackDTO feedbackDTO)
         {
             var isUserPresent=(await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName.ToLower() == feedbackDTO.UserName);

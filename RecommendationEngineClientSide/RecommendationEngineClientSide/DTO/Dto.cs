@@ -17,6 +17,10 @@ namespace RecommendationEngineClientSide.DTO
         public string MenuType { get; set; }
         public decimal MenuPrice { get; set; }
         public DateTime dateCreated { get; set; }
+        public int FoodType { get; set; }
+        public int CuisineType { get; set; }
+        public int SpiceLevel { get; set; }
+        public bool IsSweet { get; set; }
     }
 
     public class UpdateMenuRequestDto : AddMenuRequestDto

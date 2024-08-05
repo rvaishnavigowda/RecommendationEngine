@@ -9,7 +9,7 @@ namespace RecommendationEngineServerSide.Service.NotificationService
     public interface INotificationService
     {
         Task AddNotification(string notificationMessage, int notificationType, DateTime notificationDate);
-        Task<List<string>> GetNotification(int userId);
+        Task<List<string>> GetNotification(int userId, DateTime date);
         Task<string> GetMenuUpgradeFeedback(string userId);
     }
 }

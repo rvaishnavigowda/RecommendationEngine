@@ -8,12 +8,14 @@ namespace RecommendationEngineServerSide.Common.DTO
 {
     public class MenuDTO:SocketResponseDTO
     {
-        public string MenuName {  get; set; }
-        
+        public string MenuName {  get; set; }        
         public string MenuType { get; set; }
-
         public decimal MenuPrice { get; set; }
         public DateTime dateCreated { get; set; }
+        public int FoodType { get; set; }
+        public int CuisineType { get; set; }
+        public int SpiceLevel { get; set; }
+        public bool IsSweet { get; set; }
     }
 
     public class UpdateMenuDTO : MenuDTO
@@ -47,4 +49,11 @@ namespace RecommendationEngineServerSide.Common.DTO
         public IList<FetchMenuResponseDTO> MenuList { get; set; }
     }
 
+    public class OrderDTO:SocketResponseDTO
+    {
+        public string MenuName { get; set; }
+        public int OrderCount { get; set; }
+
+        public List<OrderDTO> OrderList { get; set; }
+    }
 }

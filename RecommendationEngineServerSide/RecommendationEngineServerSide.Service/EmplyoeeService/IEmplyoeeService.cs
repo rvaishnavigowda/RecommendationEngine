@@ -10,13 +10,14 @@ namespace RecommendationEngineServerSide.Service.EmplyoeeService
 {
     public interface IEmplyoeeService
     {
-        Task<List<string>> GetNotification(string userName);
+        Task<List<string>> GetNotification(DailyMenuDTO userDetails);
         Task<NotificationDTO> GetMonthlyNotification(string userName);
         Task AddMenuImprovementFeedback(UserMenuUpgradeDTO feedback);
         Task<EmployeeUpdateDTO> GetUserPreference(string userName);
         Task UpdateUserProfile(UserProfileDetailDTO profile);
         Task<DailyMenuDTO> GetDailyMenuList(DailyMenuDTO dailyMenu);
         Task<OrderDetailDTO> PlaceOrder(OrderDetailDTO orderDetailDTO);
+        Task<List<string>> GetOrderDetails(DateTime orderDate, string userName);
         Task GiveFeedback(FeedbackDTO feedbackDTO);
     }
 }

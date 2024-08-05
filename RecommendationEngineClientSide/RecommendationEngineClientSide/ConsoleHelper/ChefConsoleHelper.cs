@@ -2,6 +2,7 @@
 using RecommendationEngineClientSide.DTO;
 using RecommendationEngineClientSide.Services.ChefServices;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace RecommendationEngineClientSide.ConsoleHelper
@@ -22,15 +23,18 @@ namespace RecommendationEngineClientSide.ConsoleHelper
         {
             _loginDate = loginDate;
             _userName=userName;
+            Console.WriteLine("\nWelcome, " + _userName+ "\nChoose an option:\n");
             await GetDailyNotification();
             await GetMonthlyNotification();
             bool continueLoop = true;
             while (continueLoop)
             {
-                Console.WriteLine("\nWelcome, Chef! Choose an option:");
+                Console.WriteLine();
                 Console.WriteLine("1. Get Menu List");
                 Console.WriteLine("2. Add Daily Menu");
-                Console.WriteLine("3. Logout");
+                Console.WriteLine("3. Get Order List");
+                Console.WriteLine("4. Logout");
+                Console.Write("Your Choice: ");
                 string choice = Console.ReadLine();
 
                 switch (choice)
@@ -42,8 +46,11 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                         await AddDailyMenuAsync();
                         break;
                     case "3":
+                        await GetOrderList();
+                        break;
+                    case "4":
                         continueLoop = false;
-                        Console.WriteLine("Logging out...");
+                        Console.WriteLine("Logging out...\n");
                         break;
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
@@ -54,7 +61,12 @@ namespace RecommendationEngineClientSide.ConsoleHelper
 
         private async Task GetDailyNotification()
         {
-            var notificationsResponse = await _chefService.FetchNotificationsAsync(_userName);
+            DailyMenuRequestDto userDetail = new DailyMenuRequestDto()
+            {
+                UserName = _userName,
+                CurrentDate = _loginDate,
+            };
+            var notificationsResponse = await _chefService.FetchNotificationsAsync(userDetail);
             if (notificationsResponse.Status == "Success" )
             {
                 if(notificationsResponse.Notifications.Count > 0)
@@ -73,7 +85,7 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             }
             else
             {
-                Console.WriteLine($" {notificationsResponse.Message}");
+                Console.WriteLine($"{notificationsResponse.Message}\n");
             }
         }
 
@@ -116,9 +128,10 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                         Console.WriteLine($"\n{char.ToUpper(group.Key[0]) + group.Key.Substring(1)}:");
                         Console.WriteLine(new string('-', 57));                       
                         Console.WriteLine("{0,-20} {1,-10} {2,-10} {3,-15}", "Menu", "Price", "Rating", "Order Count");
+                        Console.WriteLine(new string('-', 57));
                         foreach (var menuItem in group.OrderByDescending(menuItem => menuItem.Rating))
                         {
-                            Console.WriteLine("{0,-20} {1,-10:F2} {2,-10} {3,-15}",
+                            Console.WriteLine("{0,-20} {1,-10:F2} {2,-10:F2} {3,-15}",
                                 menuItem.MenuItemName.ToLower(),
                                 menuItem.Price,
                                 menuItem.Rating,
@@ -167,7 +180,31 @@ namespace RecommendationEngineClientSide.ConsoleHelper
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
-
+        private async Task GetOrderList()
+        {
+            try
+            {
+                var serverResponse = await _chefService.GetOrderDetails(_loginDate);
+                if(serverResponse.Status == "Success")
+                {
+                    Console.WriteLine(new string('-', 40));
+                    Console.WriteLine("{0,-20} {1,-10}", "Item", "Order Count");
+                    Console.WriteLine(new string('-', 40));
+                    foreach(var order in serverResponse.OrderList)
+                    {
+                        Console.WriteLine("{0,-20} {1,-10}", order.MenuName, order.OrderCount);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(serverResponse.Message);
+                }
+            }
+            catch(Exception ex) 
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
         private async Task GetChefChoice(MenuListDto notification)
         {
             var menuItems = notification.Menu;
@@ -175,10 +212,10 @@ namespace RecommendationEngineClientSide.ConsoleHelper
             if (menuItems.Count > 0)
             {
                 Console.WriteLine("Menu Items for Review:");
-                Console.WriteLine("{0,-20} {1,-10}", "Menu", "Rating");
+                Console.WriteLine("{0,-20} {1,-10} {2,-20}", "Menu", "Rating", "Order Count");
                 foreach (var item in menuItems)
                 {
-                    Console.WriteLine("{0,-20} {1,-10:F2}", item.MenuItemName.ToLower(), item.Rating);
+                    Console.WriteLine("{0,-20} {1,-10:F2} {2,-20}", item.MenuItemName.ToLower(), item.Rating, item.OrderCount);
                 }
 
                 for (int i = 0; i < menuItems.Count; i++)

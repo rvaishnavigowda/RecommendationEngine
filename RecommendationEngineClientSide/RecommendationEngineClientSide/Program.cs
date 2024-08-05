@@ -79,7 +79,10 @@ namespace RecommendationEngineClient
                         break;
                     }
                 }
-                Console.WriteLine(loginResponse.Message);
+                else if(loginResponse.Status=="Failure")
+                {
+                    Console.WriteLine(loginResponse.Message);
+                }
             }
         }
     }

@@ -19,11 +19,11 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
             _mapper = mapper;
         }
 
-        public async Task<NotificationDTO> HandleGetNotification(string userName)
+        public async Task<NotificationDTO> HandleGetNotification(DailyMenuDTO userDetails )
         {
             try
             {
-                var notifications = await _chefService.GetNotification(userName);
+                var notifications = await _chefService.GetNotification(userDetails.UserName, userDetails.CurrentDate);
 
                 return new NotificationDTO
                 {
@@ -112,6 +112,27 @@ namespace RecommendationEngineServerSide.Controller.ChefControllers
             catch (Exception ex)
             {
                 return new SocketResponseDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<OrderDTO> HandleOrderList(DateTime date)
+        {
+            try
+            {
+                var orderList=await _chefService.GetOrders(date);
+
+
+                orderList.Status = "Success";
+                orderList.Message = "The order list has been successfully fetched";
+                return orderList;
+            }
+            catch (Exception ex)
+            {
+                return new OrderDTO()
                 {
                     Status = "Failure",
                     Message = ex.Message

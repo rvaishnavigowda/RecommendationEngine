@@ -16,13 +16,13 @@ namespace RecommendationEngineClientSide.Services.ChefServices
             _requestService = requestService;
         }
 
-        public async Task<NotificationDTO> FetchNotificationsAsync(string userName)
+        public async Task<NotificationDTO> FetchNotificationsAsync(DailyMenuRequestDto userDetail)
         {
             var fetchNotificationRequest = new
             {
                 Controller = "ChefController",
                 Action = "HandleGetNotification",
-                Data = new { UserName = userName }
+                Data = userDetail
             };
 
             string requestJson = JsonConvert.SerializeObject(fetchNotificationRequest);
@@ -71,7 +71,18 @@ namespace RecommendationEngineClientSide.Services.ChefServices
             var response = await _requestService.SendRequestAsync(requestJson);
             return JsonConvert.DeserializeObject<SocketResponseDTO>(response);
         }
-
+        public async Task<OrderDTO> GetOrderDetails(DateTime date)
+        {
+            var getOrderDetails = new
+            {
+                Controller = "ChefController",
+                Action = "HandleOrderList",
+                Data = date
+            };
+            string requestJson = JsonConvert.SerializeObject(getOrderDetails);
+            var response = await _requestService.SendRequestAsync(requestJson);
+            return JsonConvert.DeserializeObject<OrderDTO>(response);
+        }
         public async Task<SocketResponseDTO> RemoveFoodItemAsync(string itemName)
         {
             var removeFoodItemRequest = new

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RecommendationEngineServerSide.DAL.Repository.OrderRepo
 {
-    internal class OrderRepository : GenericRepository<UserOrder>, IOrderRepository
+    internal class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
         public OrderRepository(DBContext context) : base(context)
         {

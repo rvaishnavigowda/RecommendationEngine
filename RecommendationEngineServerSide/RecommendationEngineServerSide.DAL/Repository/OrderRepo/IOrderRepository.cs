@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RecommendationEngineServerSide.DAL.Repository.OrderRepo
 {
-    public interface IOrderRepository : IGenericRepository<UserOrder>
+    public interface IOrderRepository : IGenericRepository<Order>
     {
     }
 }

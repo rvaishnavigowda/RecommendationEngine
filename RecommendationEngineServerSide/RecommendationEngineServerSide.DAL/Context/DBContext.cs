@@ -31,6 +31,15 @@ namespace RecommendationEngineServerSide.DAL.Context
 
         public DbSet<NotificationType> notificationType { get; set; }
 
+        public DbSet<UserNotification> UserNotification { get; set; }
+
+        public DbSet<MenuFeedback> MenuFeedback { get; set; }
+        public DbSet<MenuFeedbackQuestion> MenuFeedbackQuestion { get; set; }
+        public DbSet<ProfileQuestion> ProfileQuestion { get; set; }
+        public DbSet<ProfileAnswer> ProfileAnswer { get; set; }
+        public DbSet<UserProfile> UserProfile { get; set; }
+        public DbSet<Log> Logs { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)

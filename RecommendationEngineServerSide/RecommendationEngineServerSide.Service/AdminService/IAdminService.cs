@@ -11,8 +11,10 @@ namespace RecommendationEngineServerSide.Service.AdminService
     {
         Task AddMenu(MenuDTO menuDTO);
 
+        Task<FetchMenuDTO> GetMenuDetailsByName(string menuName);
         Task UpdateMenu(UpdateMenuDTO updateMenuDTO);
 
         Task DeleteMenu(DeleteMenuDTO deleteMenuDTO);
+        Task<MenuListDTO> GetAllMenu();
     }
 }

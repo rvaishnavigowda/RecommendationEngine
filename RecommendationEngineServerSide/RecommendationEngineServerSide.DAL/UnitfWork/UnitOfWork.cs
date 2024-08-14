@@ -1,12 +1,19 @@
 ﻿using RecommendationEngineServerSide.DAL.Context;
+using RecommendationEngineServerSide.DAL.Model;
 using RecommendationEngineServerSide.DAL.Repository.DailyMenuRepo;
 using RecommendationEngineServerSide.DAL.Repository.FeedbackRepo;
+using RecommendationEngineServerSide.DAL.Repository.MenuFeedbackQuestionRepo;
+using RecommendationEngineServerSide.DAL.Repository.MenuFeedbackRepo;
 using RecommendationEngineServerSide.DAL.Repository.MenuRepo;
 using RecommendationEngineServerSide.DAL.Repository.MenuTypeRepo;
 using RecommendationEngineServerSide.DAL.Repository.NotificationRepo;
 using RecommendationEngineServerSide.DAL.Repository.NotificationTypeRepo;
 using RecommendationEngineServerSide.DAL.Repository.OrderRepo;
+using RecommendationEngineServerSide.DAL.Repository.ProfileAnswerRepo;
+using RecommendationEngineServerSide.DAL.Repository.ProfileQuestionRepo;
+using RecommendationEngineServerSide.DAL.Repository.UserNotificationRepo;
 using RecommendationEngineServerSide.DAL.Repository.UserOrderRepo;
+using RecommendationEngineServerSide.DAL.Repository.UserProfileRepo;
 using RecommendationEngineServerSide.DAL.Repository.UserRepo;
 using RecommendationEngineServerSide.DAL.Repository.UserTypeRepo;
 using System;
@@ -31,6 +38,12 @@ namespace RecommendationEngineServerSide.DAL.UnitfWork
             UserOrder = new UserOrderRepository(_context);  
             Notification= new NotificationRepository(_context);
             NotificationType = new NotificationTypeRepository(_context);
+            UserNotification= new UserNotificationRepository(_context);
+            ProfileAnswer=new ProfileAnwerRepository(_context);
+            ProfileQuestion=new ProfileQuestionRepository(_context);
+            UserProfile=new UserProfileRepository(_context);
+            MenuFeedback=new MenuFeedbackRepository(_context);
+            MenuFeedbackQuestion=new MenuFeedbackQuestionRepository(_context);
         }
 
         public IFeedbackRepository Feedback { get; }
@@ -45,6 +58,18 @@ namespace RecommendationEngineServerSide.DAL.UnitfWork
         public INotificationRepository Notification { get; }
 
         public IUserOrderRepository UserOrder { get; }
+
+        public IUserNotificationRepository UserNotification { get; }
+
+
+        public IMenuFeedbackQuestionRepository MenuFeedbackQuestion { get; }
+
+        public IMenuFeedbackRepository MenuFeedback { get; }
+
+        public IUserProfileRepository UserProfile { get; }
+
+        public IProfileQuestionRepository ProfileQuestion { get; }
+        public IProfileAnwerRepository ProfileAnswer { get; }
 
         public async Task Save()
         {

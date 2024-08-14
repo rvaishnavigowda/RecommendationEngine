@@ -11,9 +11,14 @@ namespace RecommendationEngineServerSide.Common.Exceptions
         public CommonException(string message) : base(message)
         {
         }
-        public static Exception NullInputException()
+        public static CommonException NullInputException()
         {
-            return new CustomException("Improper input. Please fill the details");
+            return new CommonException("Improper input. Please fill the details");
+        }
+
+        public static CommonException HandleNullNotification()
+        {
+            return new CommonException("There are no notifications to show");
         }
     }
 }

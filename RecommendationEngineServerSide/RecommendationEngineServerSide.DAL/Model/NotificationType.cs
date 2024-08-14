@@ -14,6 +14,6 @@ namespace RecommendationEngineServerSide.DAL.Model
 
         public string? NotificationTypeName { get; set; }
 
-        public int IsDeleted { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

@@ -1,10 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RecommendationEngineServerSide.Common.DTO;
 using RecommendationEngineServerSide.Controller;
-
-//using RecommendationEngineServerSide.Controller;
-//using RecommendationEngineServerSide.Controller.LoginControllers;
-//using RecommendationEngineServerSide.Service.RegisterService;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -16,10 +12,10 @@ public class SocketServer
 {
     private const int Port = 5000;
     private readonly ControllerRouter _controllerRouter;
- 
+
     public SocketServer(ControllerRouter controllerRouter)
     {
-       _controllerRouter = controllerRouter;
+        _controllerRouter = controllerRouter;
     }
 
     public async Task StartAsync()
@@ -30,6 +26,7 @@ public class SocketServer
 
         while (true)
         {
+
             var client = await listener.AcceptTcpClientAsync();
             _ = Task.Run(() => HandleClientAsync(client));
         }
@@ -37,8 +34,8 @@ public class SocketServer
 
     private async Task HandleClientAsync(TcpClient client)
     {
-        Console.WriteLine("Client connected");
-        var buffer = new byte[1024];
+
+        var buffer = new byte[2048];
         var stream = client.GetStream();
 
         try
@@ -52,7 +49,7 @@ public class SocketServer
                 Console.WriteLine($"Received: {requestJson}");
 
                 var responseJson = await HandleRequestAsync(requestJson);
-
+                Console.WriteLine("Response: "+ responseJson);
                 var responseBytes = Encoding.UTF8.GetBytes(responseJson);
                 await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
             }
@@ -61,11 +58,7 @@ public class SocketServer
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
-        //finally
-        //{
-        //    client.Close();
-        //    Console.WriteLine("Client disconnected");
-        //}
+
     }
 
     private async Task<string> HandleRequestAsync(string requestJson)
@@ -76,12 +69,11 @@ public class SocketServer
         {
             return "Invalid request format";
         }
-        var response=(await _controllerRouter.RouteRequestAsync(requestObject.Controller, requestObject.Action,requestObject.Data));
+        var response = (await _controllerRouter.RouteRequestAsync(requestObject.Controller, requestObject.Action, requestObject.Data));
         return response;
-      
-
-        
     }
 
 
 }
+
+

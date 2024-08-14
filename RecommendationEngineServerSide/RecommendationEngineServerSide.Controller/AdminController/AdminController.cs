@@ -30,7 +30,7 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 await _adminService.AddMenu(menuDTO);
                 ResponseMenuDTO responseMenuDTO = new ResponseMenuDTO()
                 {
-                    Status = "Sucsess",
+                    Status = "Success",
                     Message = "The menu has been successfully added."
                 };
                 return responseMenuDTO;
@@ -56,7 +56,26 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 return new ResponseMenuDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public async Task<FetchMenuDTO> FetchMenuDetails(FetchMenuRequestDTO fetchMenuRequestDto)
+        {
+            try
+            {
+                var menuDetails = await _adminService.GetMenuDetailsByName(fetchMenuRequestDto.MenuName);
+                menuDetails.Status = "Success";
+                menuDetails.Message="The menu items by the name"+fetchMenuRequestDto.MenuName;
+                return menuDetails;
+            }
+            catch(AdminException ex)
+            {
+                return new FetchMenuDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
                 };
             }
         }
@@ -94,11 +113,27 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 return new SocketResponseDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message = ex.Message
                 };
             }
         }
-
+        public async Task<MenuListDTO> GetAllMenu()
+        {
+            try
+            {
+                var menuList=await _adminService.GetAllMenu();
+                menuList.Status = "Success";
+                return menuList;
+            }
+            catch(Exception ex)
+            {
+                return new MenuListDTO
+                {
+                    Status = "Failure",
+                    Message = ex.Message
+                };
+            }
+        }
         public async Task<SocketResponseDTO> DeleteMenu(DeleteMenuDTO deleteMenuDTO)
         {
             try
@@ -132,9 +167,11 @@ namespace RecommendationEngineServerSide.Controller.AdminControllers
                 return new SocketResponseDTO
                 {
                     Status = "Failure",
-                    Message = "An unexpected error occurred: " + ex.Message
+                    Message =  ex.Message
                 };
             }
         }
+
+        
     }   
 }

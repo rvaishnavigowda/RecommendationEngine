@@ -28,7 +28,7 @@ namespace RecommendationEngineServerSide.Service.RegisterService
                 var isUserPresent = await CheckUser(userDTO);
                 if (isUserPresent != null)
                 {
-                    bool isPasswordRight = await CheckPassword(isUserPresent);
+                    bool isPasswordRight = await CheckPassword(userDTO);
                     if (isPasswordRight)
                     {
                         userDTO.UserRole = isUserPresent.UserType.UserTypeName;
@@ -53,7 +53,7 @@ namespace RecommendationEngineServerSide.Service.RegisterService
 
         private async Task<User> CheckUser(UserDTO user)
         {
-            var isUserPresent= (await  _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName == user.UserName);
+            var isUserPresent= (await  _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName.ToLower() == user.UserName);
             if (isUserPresent != null)
             {
                 return isUserPresent;
@@ -64,9 +64,9 @@ namespace RecommendationEngineServerSide.Service.RegisterService
             }
         }
 
-        private async Task<bool> CheckPassword(User user)
+        private async Task<bool> CheckPassword(UserDTO user)
         {
-            var isPasswordRight = (await _unitOfWork.User.GetById(user.UserId));
+            var isPasswordRight = (await _unitOfWork.User.GetAll()).FirstOrDefault(a=>a.UserName.ToLower()==user.UserName);
             if (isPasswordRight!=null)
             {
                 if(isPasswordRight.Password==user.Password)

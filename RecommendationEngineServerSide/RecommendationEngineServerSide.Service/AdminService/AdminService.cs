@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RecommendationEngineServerSide.Common.ApplicationConst;
 using RecommendationEngineServerSide.Common.DTO;
 using RecommendationEngineServerSide.Common.Enum;
 using RecommendationEngineServerSide.Common.Exceptions;
@@ -31,11 +32,37 @@ namespace RecommendationEngineServerSide.Service.AdminService
 
             if(menuDTO!=null)
             {
+                
                 var isMenuTypePresent = await CheckMenuType(menuDTO.MenuType);
                 if (isMenuTypePresent != null)
                 {
                     var isMenuItemPresent = await CheckMenuItem(menuDTO.MenuName);
-                    if (isMenuItemPresent == null)
+                    if (isMenuItemPresent == null )
+                    {
+
+                        Menu menu = new Menu
+                        {
+                            MenuName = menuDTO.MenuName,
+                            MenuTypeId = isMenuTypePresent.MenuTypeId,
+                            Price = menuDTO.MenuPrice,
+                            FoodTypeId=menuDTO.FoodType,
+                            CuisineTypeId=menuDTO.CuisineType,
+                            SpiceLevel=menuDTO.SpiceLevel,
+                            IsSweet=menuDTO.IsSweet,
+                            MenuStatus=(int)MenuStatus.Active
+                        };
+                        await _unitOfWork.Menu.Add(menu);
+                        await _unitOfWork.Save();
+                        await UpdateNotification(menu.MenuName, menuDTO.MenuType,menuDTO.dateCreated);
+
+                    }
+                    else if(isMenuItemPresent!=null && isMenuItemPresent.MenuStatus==2)
+                    {
+                        isMenuItemPresent.MenuStatus = 1;
+                        await _unitOfWork.Menu.Update(isMenuItemPresent);
+                        await _unitOfWork.Save();
+                    }
+                    else if(isMenuItemPresent!=null && isMenuItemPresent.MenuStatus == 2 && isMenuItemPresent.MenuType.MenuTypeName!=menuDTO.MenuType)
                     {
                         Menu menu = new Menu
                         {
@@ -45,7 +72,7 @@ namespace RecommendationEngineServerSide.Service.AdminService
                         };
                         await _unitOfWork.Menu.Add(menu);
                         await _unitOfWork.Save();
-
+                        await UpdateNotification(menu.MenuName, menuDTO.MenuType, menuDTO.dateCreated);
                     }
                     else
                     {
@@ -62,35 +89,87 @@ namespace RecommendationEngineServerSide.Service.AdminService
                 CommonException.NullInputException();
             }
         }
+        public async Task<FetchMenuDTO> GetMenuDetailsByName(string menuName)
+        {
+            var isMenuNamePresent=(await _unitOfWork.Menu.GetAll()).Where(a=>a.MenuName.ToLower()==menuName && a.MenuStatus==1).ToList() ;
+            if(isMenuNamePresent.Count!=0)
+            {
+                FetchMenuDTO menuDTO = new FetchMenuDTO()
+                {
+                    MenuList = new List<FetchMenuResponseDTO>()
+                };
+                foreach(var menuItem in isMenuNamePresent)
+                {
+                    var menuitem = new FetchMenuResponseDTO()
+                    {
+                        MenuName = menuItem.MenuName,
+                        MenuType = menuItem.MenuType.MenuTypeName,
+                        MenuPrice = menuItem.Price,
+                    };
+                    menuDTO.MenuList.Add(menuitem);
+                }
+                return menuDTO;
+            }
+            else
+            {
+                throw AdminException.HandleMenuItemNotFound();
+            }
+        }
 
         public async Task UpdateMenu(UpdateMenuDTO updateMenuDTO)
         {
             if (updateMenuDTO!=null)
             {
                 var isMenuItemPresent = await CheckMenuItem(updateMenuDTO.MenuName);
-                if (isMenuItemPresent != null)
+                if (isMenuItemPresent != null )
                 {
-                    Menu menu = new Menu
-                    {
-                        MenuName = updateMenuDTO.MenuName,
-                        MenuTypeId = isMenuItemPresent.MenuType.MenuTypeId,
-                        Price = updateMenuDTO.MenuPrice,
-                    };
-                    await _unitOfWork.Menu.Update(menu);
+                    isMenuItemPresent.MenuName= updateMenuDTO.MenuName;
+                    isMenuItemPresent.Price= updateMenuDTO.MenuPrice;
+                    await _unitOfWork.Menu.Update(isMenuItemPresent);
                     await _unitOfWork.Save();
+                }
+                else if(isMenuItemPresent.MenuStatus==2)
+                {
+                    throw AdminException.HandleMenuItemDeleted();
                 }
                 else
                 {
-                    AdminException.HandleMenuItemNotFound();
+                   throw  AdminException.HandleMenuItemNotFound();
                 }
             }
             else
             {
-                CommonException.NullInputException();
+                throw CommonException.NullInputException();
             }
            
         }
 
+        public async Task<MenuListDTO> GetAllMenu()
+        {
+            var menuList=(await _unitOfWork.Menu.GetAll()).Where(a=>a.MenuStatus==1).ToList();
+            if(menuList!=null)
+            {
+                var menu = new MenuListDTO()
+                {
+                    Menu = new List<ListMenuDTO>()
+                };
+                foreach(var item in menuList)
+                {
+                    var menuItem = new ListMenuDTO()
+                    {
+                        MenuItemName = item.MenuName,
+                        Price = item.Price,
+                        MenuItemType = item.MenuType.MenuTypeName
+                    };
+                    menu.Menu.Add(menuItem);
+                }
+                return menu;
+            }
+            else
+            {
+                throw AdminException.HandleNoMenu();
+            }
+        }
         public async Task DeleteMenu(DeleteMenuDTO deleteMenuDTO)
         {
             if (deleteMenuDTO!=null)
@@ -98,18 +177,25 @@ namespace RecommendationEngineServerSide.Service.AdminService
                 var isMenuItemPresent = await CheckMenuItem(deleteMenuDTO.MenuName);
                 if (isMenuItemPresent != null)
                 {
-                    isMenuItemPresent.ISDeleted = 1;
-                    await _unitOfWork.Menu.Update(isMenuItemPresent);
-                    await _unitOfWork.Save();
+                    if(isMenuItemPresent.MenuStatus==1)
+                    {
+                        isMenuItemPresent.MenuStatus = 2;
+                        await _unitOfWork.Menu.Update(isMenuItemPresent);
+                        await _unitOfWork.Save();
+                    }
+                    else
+                    {
+                        throw AdminException.HandleMenuItemAlreadyDeleted();
+                    }
                 }
                 else
                 {
-                    AdminException.HandleMenuItemNotFound();
+                    throw AdminException.HandleMenuItemNotFound();
                 }
             }
            else
             {
-                CommonException.NullInputException ();
+                throw CommonException.NullInputException ();
             }
         }
 
@@ -139,11 +225,11 @@ namespace RecommendationEngineServerSide.Service.AdminService
             }  
         }
 
-        private async Task UpdateNotification(string menuName)
+        private async Task UpdateNotification(string menuName, string menuType, DateTime date)
         {
-            string message = "A new item " + menuName + " has been to menu.";
             int notificationTypeId = (int)NotificationTypeEnum.NewMenuItemAdded;
-            await _notificationService.AddNotification(message, notificationTypeId);
+            string notification = ApplicationConstant.NewMenuItemNotification + " : " + menuName;
+            await _notificationService.AddNotification(notification, notificationTypeId, date);
         }
     }
 }

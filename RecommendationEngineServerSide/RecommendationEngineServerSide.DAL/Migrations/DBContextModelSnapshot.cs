@@ -36,11 +36,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.Property<DateTime>("DailyMenuDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("DailyMenuName")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ISDeleted")
-                        .HasColumnType("int");
+                    b.Property<bool>("ISDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("MenuId")
                         .HasColumnType("int");
@@ -66,8 +63,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.Property<DateTime>("FeedbackDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("ISDeleted")
-                        .HasColumnType("int");
+                    b.Property<bool>("ISDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("MenuId")
                         .HasColumnType("int");
@@ -87,6 +84,37 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.ToTable("Feedback");
                 });
 
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.Log", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Callsite")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Exception")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Level")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("Logged")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Logger")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Logs");
+                });
+
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.Menu", b =>
                 {
                     b.Property<int>("MenuId")
@@ -95,8 +123,14 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MenuId"));
 
-                    b.Property<int>("ISDeleted")
+                    b.Property<int>("CuisineTypeId")
                         .HasColumnType("int");
+
+                    b.Property<int>("FoodTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsSweet")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("MenuCreationDate")
                         .HasColumnType("datetime(6)");
@@ -104,17 +138,70 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.Property<string>("MenuName")
                         .HasColumnType("longtext");
 
+                    b.Property<int>("MenuStatus")
+                        .HasColumnType("int");
+
                     b.Property<int>("MenuTypeId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(65,30)");
 
+                    b.Property<int>("SpiceLevel")
+                        .HasColumnType("int");
+
                     b.HasKey("MenuId");
 
                     b.HasIndex("MenuTypeId");
 
                     b.ToTable("Menu");
+                });
+
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.MenuFeedback", b =>
+                {
+                    b.Property<int>("MenuFeedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MenuFeedbackId"));
+
+                    b.Property<string>("MenuFeedbackAnswer")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("MenuFeedbackQuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MenuId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MenuFeedbackId");
+
+                    b.HasIndex("MenuFeedbackQuestionId");
+
+                    b.HasIndex("MenuId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("MenuFeedback");
+                });
+
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.MenuFeedbackQuestion", b =>
+                {
+                    b.Property<int>("MenuFeedbackQuestionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MenuFeedbackQuestionId"));
+
+                    b.Property<string>("MenuFeedbackQuestionTitle")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("MenuFeedbackQuestionId");
+
+                    b.ToTable("MenuFeedbackQuestion");
                 });
 
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.MenuType", b =>
@@ -125,8 +212,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MenuTypeId"));
 
-                    b.Property<int>("ISDeleted")
-                        .HasColumnType("int");
+                    b.Property<bool>("ISDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("MenuTypeName")
                         .HasColumnType("longtext");
@@ -144,8 +231,11 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("NotificationId"));
 
-                    b.Property<int>("IsDeleted")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("NotificationDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("NotificationMessage")
                         .HasColumnType("longtext");
@@ -168,8 +258,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("NotificationTypeId"));
 
-                    b.Property<int>("IsDeleted")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("NotificationTypeName")
                         .HasColumnType("longtext");
@@ -187,8 +277,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<int>("IsDeleted")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("MenuTypeId")
                         .HasColumnType("int");
@@ -208,6 +298,43 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.ToTable("Order");
                 });
 
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.ProfileAnswer", b =>
+                {
+                    b.Property<int>("PAId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PAId"));
+
+                    b.Property<string>("ProfileAnswerSolution")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("ProfileQuestionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PAId");
+
+                    b.HasIndex("ProfileQuestionId");
+
+                    b.ToTable("ProfileAnswer");
+                });
+
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.ProfileQuestion", b =>
+                {
+                    b.Property<int>("PQId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PQId"));
+
+                    b.Property<string>("Question")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("PQId");
+
+                    b.ToTable("ProfileQuestion");
+                });
+
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -216,8 +343,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
 
-                    b.Property<int>("IsDeleted")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Password")
                         .HasColumnType("longtext");
@@ -236,6 +363,29 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.HasIndex("UserTypeId");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserNotification", b =>
+                {
+                    b.Property<int>("UserNotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserNotificationId"));
+
+                    b.Property<int>("NotificationId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserNotificationId");
+
+                    b.HasIndex("NotificationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserNotification");
                 });
 
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserOrder", b =>
@@ -261,6 +411,29 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.ToTable("UserOrder");
                 });
 
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserProfile", b =>
+                {
+                    b.Property<int>("UserProfileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserProfileId"));
+
+                    b.Property<int>("ProfileAnswerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserProfileId");
+
+                    b.HasIndex("ProfileAnswerId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserProfile");
+                });
+
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserType", b =>
                 {
                     b.Property<int>("UserTypeId")
@@ -269,8 +442,8 @@ namespace RecommendationEngineServerSide.DAL.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserTypeId"));
 
-                    b.Property<int>("IsDeleted")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserTypeName")
                         .HasColumnType("longtext");
@@ -321,6 +494,33 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.Navigation("MenuType");
                 });
 
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.MenuFeedback", b =>
+                {
+                    b.HasOne("RecommendationEngineServerSide.DAL.Model.MenuFeedbackQuestion", "MenuFeedbackQuestion")
+                        .WithMany()
+                        .HasForeignKey("MenuFeedbackQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecommendationEngineServerSide.DAL.Model.Menu", "Menu")
+                        .WithMany()
+                        .HasForeignKey("MenuId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecommendationEngineServerSide.DAL.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("MenuFeedbackQuestion");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.Notification", b =>
                 {
                     b.HasOne("RecommendationEngineServerSide.DAL.Model.NotificationType", "NotificationType")
@@ -351,6 +551,17 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.ProfileAnswer", b =>
+                {
+                    b.HasOne("RecommendationEngineServerSide.DAL.Model.ProfileQuestion", "ProfileQuestion")
+                        .WithMany()
+                        .HasForeignKey("ProfileQuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProfileQuestion");
+                });
+
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.User", b =>
                 {
                     b.HasOne("RecommendationEngineServerSide.DAL.Model.UserType", "UserType")
@@ -360,6 +571,25 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                         .IsRequired();
 
                     b.Navigation("UserType");
+                });
+
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserNotification", b =>
+                {
+                    b.HasOne("RecommendationEngineServerSide.DAL.Model.Notification", "Notification")
+                        .WithMany()
+                        .HasForeignKey("NotificationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecommendationEngineServerSide.DAL.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Notification");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserOrder", b =>
@@ -379,6 +609,25 @@ namespace RecommendationEngineServerSide.DAL.Migrations
                     b.Navigation("DailyMenu");
 
                     b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("RecommendationEngineServerSide.DAL.Model.UserProfile", b =>
+                {
+                    b.HasOne("RecommendationEngineServerSide.DAL.Model.ProfileAnswer", "ProfileAnswer")
+                        .WithMany()
+                        .HasForeignKey("ProfileAnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecommendationEngineServerSide.DAL.Model.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProfileAnswer");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

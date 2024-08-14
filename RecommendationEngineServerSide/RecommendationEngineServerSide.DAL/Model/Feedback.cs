@@ -17,6 +17,6 @@ namespace RecommendationEngineServerSide.DAL.Model
         public virtual User? User { get; set; }
         public virtual Menu? Menu { get; set; }
 
-        public int ISDeleted { get; set; }
+        public bool ISDeleted { get; set; }
     }
 }

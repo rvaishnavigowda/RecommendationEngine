@@ -14,9 +14,17 @@ namespace RecommendationEngineServerSide.Common.DTO
 
     }
 
+    public class userDto
+    {
+        public string UserName { get; set; }
+    }
     public class ResponseUserDTO: UserDTO
     {
         
     }
 
+    public class NotificationDTO : SocketResponseDTO
+    {
+        public List<string> Notifications { get; set; }
+    }
 }
